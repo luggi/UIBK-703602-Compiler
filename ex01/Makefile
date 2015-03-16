@@ -16,4 +16,4 @@ new_sample.c: new_sample.l
 
 clean:
 	$(RM) -f *.o
-	$(RM) -f pascal pascal.c
+	$(RM) -f new_sample new_sample.c
