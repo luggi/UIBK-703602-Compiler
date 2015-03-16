@@ -13,11 +13,9 @@ void yyerror(const char *message);
 
 keyword (?i:and|array|begin|div|do|else|end|false|for|if|integer|mod|of|program|real|then|to|true|var|while)
 
-operator ":="|"<>"|"<="|">="|".."|">"|"<"|"+"|"-"|"*"|"/"|":"|"="|";"|"^"|"."
+operator ":="|"<>"|"<="|">="|".."|">"|"<"|"+"|"-"|"*"|"/"|":"|"="|";"|"^"|"."|","
 
-comma ","
-
-whitespace [ \t\r\n]*
+whitespace [ \t]+
 
 parentheses "("|")"|"["|"]"
 
@@ -35,8 +33,14 @@ identifier (?i:[[:alpha:]][[:alnum:]]*)
  /* lowercase identifiers */
 {identifier}            {toLower(yytext);printf("%s", yytext);}
 
- /* collapse newline and whitespace */
+ /* remove leading whitespace */
+^{whitespace}           ;
+
+ /* compress whitespace */
 {whitespace}            printf(" ");
+
+ /* compress empty lines */
+({whitespace}?\r?\n)+   printf("\n");
 
  /* comments */
 "{"                     {BEGIN(COMMENT);printf("(*");}
