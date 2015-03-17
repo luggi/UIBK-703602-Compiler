@@ -21,7 +21,7 @@ string \"[^"]*\"
 
 number [[:digit:]]+
 
-identifier (?i:[[:alpha:]]+)
+identifier [[:alpha:]][[:alnum:]]*
 
 %%
 
