@@ -5,6 +5,8 @@ LDLIBS  = -lfl
 
 .PHONY: clean
 
+all: new_sample simple_example
+
 new_sample: new_sample.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
@@ -14,10 +16,10 @@ new_sample.c: new_sample.l
 simple_example: simple_example.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-simple_example.c: new_sample.l
+simple_example.c: simple_example.l
 	$(LEX) -o $@ $^
-
 
 clean:
 	$(RM) -f *.o
 	$(RM) -f new_sample new_sample.c simple_example.c simple_example
+	$(RM) -f lex.yy.c a.out
