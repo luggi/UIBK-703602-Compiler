@@ -1,5 +1,5 @@
 LEX     = flex
-CFLAGS  = -Wall -Werror -Wno-unused-function
+CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
 LDFLAGS =
 LDLIBS  = -lfl
 

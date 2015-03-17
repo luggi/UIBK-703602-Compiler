@@ -5,8 +5,6 @@
 
 void toUpper(char *string);
 void toLower(char *string);
-
-void yyerror(const char *message);
 %}
 
 %x COMMENT
@@ -21,9 +19,9 @@ parentheses "("|")"|"["|"]"
 
 string \"[^"]*\"
 
-number [[:digit:]][[:digit:]]*
+number [[:digit:]]+
 
-identifier (?i:[[:alpha:]][[:alnum:]]*)
+identifier (?i:[[:alpha:]]+)
 
 %%
 
@@ -50,15 +48,13 @@ identifier (?i:[[:alpha:]][[:alnum:]]*)
 %%
 
 void toUpper(char *string) {
-    unsigned int i;
-    for (i = 0; string[i] != '\0'; i++) {
+    for (unsigned int i = 0; string[i] != '\0'; i++) {
         string[i] = toupper(string[i]);
     }
 }
 
 void toLower(char *string) {
-    unsigned int i;
-    for (i = 0; string[i] != '\0'; i++) {
+    for (unsigned int i = 0; string[i] != '\0'; i++) {
         string[i] = tolower(string[i]);
     }
 }
