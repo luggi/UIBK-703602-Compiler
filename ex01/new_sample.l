@@ -42,7 +42,6 @@ identifier [[:alpha:]][[:alnum:]]*
 
  /* comments */
 "{"                     {BEGIN(COMMENT);printf("(*");}
-<COMMENT>\n             printf("\n");
 <COMMENT>"}"            {BEGIN(INITIAL);printf("*)");}
 
 %%

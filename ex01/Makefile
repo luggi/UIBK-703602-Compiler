@@ -3,7 +3,7 @@ CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
 LDFLAGS =
 LDLIBS  = -lfl
 
-.PHONY: clean
+.PHONY: all clean
 
 all: new_sample simple_example
 
@@ -21,5 +21,5 @@ simple_example.c: simple_example.l
 
 clean:
 	$(RM) -f *.o
-	$(RM) -f new_sample new_sample.c simple_example.c simple_example
-	$(RM) -f lex.yy.c a.out
+	$(RM) -f new_sample new_sample.c
+	$(RM) -f simple_example simple_example.c
