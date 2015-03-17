@@ -11,6 +11,13 @@ new_sample: new_sample.o
 new_sample.c: new_sample.l
 	$(LEX) -o $@ $^
 
+simple_example: simple_example.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+simple_example.c: new_sample.l
+	$(LEX) -o $@ $^
+
+
 clean:
 	$(RM) -f *.o
-	$(RM) -f new_sample new_sample.c
+	$(RM) -f new_sample new_sample.c simple_example.c simple_example
