@@ -1,7 +1,7 @@
 LEX     = flex
 CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
 LDFLAGS =
-LDLIBS  = -lfl
+LDLIBS  =
 
 .PHONY: all clean
 
