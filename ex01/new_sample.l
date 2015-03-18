@@ -17,8 +17,6 @@ whitespace [ \t]+
 
 parentheses "("|")"|"["|"]"
 
-string \"[^"]*\"
-
 number [[:digit:]]+
 
 identifier [[:alpha:]][[:alnum:]]*
@@ -35,7 +33,7 @@ identifier [[:alpha:]][[:alnum:]]*
 ^{whitespace}           ;
 
  /* compress whitespace */
-" "{whitespace}            printf(" ");
+{whitespace}            printf(" ");
 
  /* compress empty lines */
 ({whitespace}?\r?\n)+   printf("\n");
