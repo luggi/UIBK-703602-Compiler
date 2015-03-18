@@ -1,7 +1,7 @@
 /* Authors:
  * - Huber Lukas
  * - Alexander Hirsch
- * - PatrickOber
+ * - Patrick Ober
  * - Michael Tscholl
  * - Franz Josef Haider
  */
