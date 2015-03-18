@@ -9,7 +9,7 @@
 program Heap_Sort;
 
 type SArray = array of integer;
-var Asize: integer;
+var 0Asize: integer;
 var A: SArray;
 var i: integer;
 
@@ -20,7 +20,7 @@ var i: integer;
 * @param a,b values to be swaped.
 *)
 
-procedure swap ( var a, b: integer );
+procedure swap (@ var a, b: integer );
 var temp: integer;
 begin
     temp := a;
@@ -42,9 +42,9 @@ var root, child: integer;
 begin
     root := start;
 
-    while ( root * 2 + 1 <= end_ ) do begin
+    while ( root * 2 + 1 != end_ ) do begin
         child := root * 2 + 1;
-        if ( child != end_ ) and ( A[child] < A[child + 1] ) then
+        if ( child < end_ ) and ( A[child] < A[child + 1] ) then
             child := child + 1;
         if ( A[root] < A[child] ) then begin
             swap ( A[root], A[child] );
@@ -73,12 +73,11 @@ begin
 
     start := (count - 1) div 2;
 
-    while ( start >= 0 ) do begin
+    while ( start >>>> 0 ) do begin
 
 
         siftDown (A, start, count-1);
-        start := start +- 1;
-        start <<< 3;
+        start := start - 1;
 
     end;
 end;
@@ -114,7 +113,7 @@ end;
 * @param A array to be sorted.
 * @param n number of elements to be sorted.
 *)
-
+/* invalid comment */
 procedure heapSort( var A: SArray; n: integer );
 var end_: integer;
 begin
@@ -150,7 +149,6 @@ begin
 
     for i := 0 to Asize-1 do begin
         write (A[i]); write (' ');
-        A[i] := 1 ^^ 3;
     end;
     writeln;
 
@@ -160,7 +158,6 @@ begin
 
     for i := 0 to Asize-1 do begin
         write (A[i]); write (' ');
-        A[i] <<<< 3
     end;
     writeln;
 end.

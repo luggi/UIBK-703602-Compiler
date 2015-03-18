@@ -9,6 +9,7 @@ unsigned int operators = 0;
 unsigned int types = 0;
 unsigned int numbers = 0;
 unsigned int identifiers = 0;
+
 unsigned int line_number = 0;
 %}
 
@@ -22,12 +23,13 @@ literals      true|false
 operators     "+"|"-"|"/"|"*"|"<>"|":="|"="|">"|"<"|"<="|">="|".."|":"|"."
 parent_l      "("
 parent_r      ")"
-braket_l      "["
-braket_r      "]"
+bracket_l      "["
+bracket_r      "]"
 comma         ","
 semicolon     ";"
 numbers       [0-9]+
-identifiers   [a-zA-z_][a-zA-z0-9_]*
+text          [a-zA-Z_][a-zA-Z_]*
+identifiers   [a-zA-Z_][a-zA-Z0-9_]*
 
 
 %x COMMENT1 COMMENT2
@@ -37,18 +39,23 @@ identifiers   [a-zA-z_][a-zA-z0-9_]*
 \r?\n          line_number++;
 {string}       printf("STRING:      %s\n", yytext);
 {keywords}     {printf("KEYWORD:    %s\n", yytext);keywords++;}
+
 {operators}    {printf("OPERATOR:   %s\n", yytext);operators++;}
+{operators}{operators}+   yyerror("invalid operator");
+
 {comma}         printf("COMMA:      %s\n", yytext);
 {semicolon}     printf("SEMICOLON:  %s\n", yytext);
 {types}        {printf("TYPE:       %s\n", yytext);types++;}
-{numbers}      {printf("NUMBER:     %s\n", yytext);numbers++;}
-{literals}     {printf("LITERAL:    %s\n", yytext);literals++;}
 
+{numbers}      {printf("NUMBER:     %s\n", yytext);numbers++;}
+{numbers}{text}  yyerror("invalid identifier");
+
+{literals}     {printf("LITERAL:    %s\n", yytext);literals++;}
 
 {parent_l}      printf("PARENT L:   %s\n", yytext);
 {parent_r}      printf("PARENT R:   %s\n", yytext);
-{braket_l}      printf("BRAKET L:   %s\n", yytext);
-{braket_r}      printf("BRAKET R:   %s\n", yytext);
+{bracket_l}      printf("BRACKET L:   %s\n", yytext);
+{bracket_r}      printf("BRACKET R:   %s\n", yytext);
 
 {identifiers}  {printf("IDENTIFIER: %s\n", yytext);identifiers++;}
 
@@ -85,7 +92,7 @@ int main(int argc, char **argv) {
 
 void yyerror(char *message) {
     fprintf(stderr, "Error: \"%s\" in line %d. Token = %s\n",
-            message, line_number, yytext);
+            message, line_number+1, yytext);
 }
 
 
