@@ -15,12 +15,12 @@ analysis tool `lex`:
    well-known algorithm. Modify it to contain at least five lexical errors
    reported by the lexical analyser.
  
- =======
+- - -
  
- ERRORs in algorithm_error.pas 
+ERRORs in `algorithm_error.pas`
  
- 1. line 12: 0Asize not a valid string name
- 2. line 23: @ is not a valid character
- 3. line 45: != is not a valid operator in pascal
- 4. line 76: >>>>> not a valid operator
- 5. line 116: /\* invalid comment */
+1. line 12: `0Asize` not a valid identifier
+2. line 23: `@` is not a valid identifier / operator
+3. line 45: `!=` is not a valid operator
+4. line 76: `>>>>>` not a valid operator
+5. line 116: /\* invalid comment \*/
