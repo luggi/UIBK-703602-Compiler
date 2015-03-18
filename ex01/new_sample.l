@@ -1,4 +1,11 @@
-/* Huber Lukas, Alexander Hirsch, Patrick Ober, Michael Tscholl, Franz Josef Haider */
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - PatrickOber
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ */
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,15 +20,10 @@ void toLower(char *string);
 %x COMMENT
 
 keyword (?i:and|array|begin|div|do|else|end|false|for|if|integer|mod|of|program|real|then|to|true|var|while)
-
 operator ":="|"<>"|"<="|">="|".."|">"|"<"|"+"|"-"|"*"|"/"|":"|"="|";"|"^"|"."|","
-
 whitespace [ \t]+
-
 parentheses "("|")"|"["|"]"
-
 number [[:digit:]]+
-
 identifier [[:alpha:]][[:alnum:]]*
 
 %%
@@ -41,7 +43,7 @@ identifier [[:alpha:]][[:alnum:]]*
  /* compress empty lines */
 ({whitespace}?\r?\n)+   printf("\n");
 
- /* comments */
+ /* convert comments */
 "{"                     {BEGIN(COMMENT);printf("(*");}
 <COMMENT>"}"            {BEGIN(INITIAL);printf("*)");}
 

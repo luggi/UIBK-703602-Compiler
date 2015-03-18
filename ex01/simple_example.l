@@ -1,6 +1,14 @@
-/* Huber Lukas, Alexander Hirsch, Patrick Ober, Michael Tscholl, Franz Josef Haider */
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - PatrickOber
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ */
+
 %{
 #include <stdio.h>
+#include <stdlib.h>
 
 void yyerror(char *message);
 
@@ -15,6 +23,8 @@ unsigned int line_number = 0;
 %}
 
 %option noyywrap
+
+%x COMMENT1 COMMENT2
 
 string        \'.*\'
 whitespace    [ \t]+
@@ -32,68 +42,63 @@ numbers       [0-9]+
 text          [a-zA-Z_][a-zA-Z_]*
 identifiers   [a-zA-Z_][a-zA-Z0-9_]*
 
-
-%x COMMENT1 COMMENT2
-
 %%
 
-\r?\n          line_number++;
-{string}       printf("STRING:      %s\n", yytext);
-{keywords}     {printf("KEYWORD:    %s\n", yytext);keywords++;}
+\r?\n                       {line_number++;}
+{string}                     printf("STRING:     %s\n", yytext);
+{keywords}                  {printf("KEYWORD:    %s\n", yytext);keywords++;}
 
-{operators}    {printf("OPERATOR:   %s\n", yytext);operators++;}
-{operators}{operators}+   yyerror("invalid operator");
+{operators}                 {printf("OPERATOR:   %s\n", yytext);operators++;}
+{operators}+                yyerror("invalid operator");
 
-{comma}         printf("COMMA:      %s\n", yytext);
-{semicolon}     printf("SEMICOLON:  %s\n", yytext);
-{types}        {printf("TYPE:       %s\n", yytext);types++;}
+{comma}                      printf("COMMA:      %s\n", yytext);
+{semicolon}                  printf("SEMICOLON:  %s\n", yytext);
+{types}                     {printf("TYPE:       %s\n", yytext);types++;}
 
-{numbers}      {printf("NUMBER:     %s\n", yytext);numbers++;}
-{numbers}{text}  yyerror("invalid identifier");
+{numbers}                   {printf("NUMBER:     %s\n", yytext);numbers++;}
+{numbers}{text}             yyerror("invalid identifier");
 
-{literals}     {printf("LITERAL:    %s\n", yytext);literals++;}
+{literals}                  {printf("LITERAL:    %s\n", yytext);literals++;}
 
-{parent_l}      printf("PARENT L:   %s\n", yytext);
-{parent_r}      printf("PARENT R:   %s\n", yytext);
-{bracket_l}      printf("BRACKET L:   %s\n", yytext);
-{bracket_r}      printf("BRACKET R:   %s\n", yytext);
+{parent_l}                   printf("PARENT L:   %s\n", yytext);
+{parent_r}                   printf("PARENT R:   %s\n", yytext);
+{bracket_l}                  printf("BRACKET L:  %s\n", yytext);
+{bracket_r}                  printf("BRACKET R:  %s\n", yytext);
 
-{identifiers}  {printf("IDENTIFIER: %s\n", yytext);identifiers++;}
+{identifiers}               {printf("IDENTIFIER: %s\n", yytext);identifiers++;}
 
-"{"             BEGIN(COMMENT1);
-<COMMENT1>"}"   BEGIN(INITIAL);
-<COMMENT1>\n    line_number++;
-<COMMENT1>.     ;
+"{"                         BEGIN(COMMENT1);
+<COMMENT1>"}"               BEGIN(INITIAL);
+<COMMENT1>\n                line_number++;
+<COMMENT1>.                 ;
 
-"(*"            BEGIN(COMMENT2);
-<COMMENT2>"*)"  BEGIN(INITIAL);
-<COMMENT2>\n    line_number++;
-<COMMENT2>.     ;
+"(*"                        BEGIN(COMMENT2);
+<COMMENT2>"*)"              BEGIN(INITIAL);
+<COMMENT2>\n                line_number++;
+<COMMENT2>.                 ;
 
-{whitespace}   ;
+{whitespace}                ;
 
-.              yyerror("no symbol");
+.                           yyerror("no symbol");
 
 %%
-
-int main(int argc, char **argv) {
-  yylex();
-
-  printf("---- finished ----\n");
-  printf("Number of keywords:    %d\n", keywords);
-  printf("Number of literals:    %d\n", literals);
-  printf("Number of types:       %d\n", types);
-  printf("Number of numbers:     %d\n", numbers);
-  printf("Number of identifiers: %d\n", identifiers);
-  printf("Number of operators:   %d\n", operators);
-  printf("Number of lines:       %d\n", line_number);
-
-  return 0;
-}
 
 void yyerror(char *message) {
     fprintf(stderr, "Error: \"%s\" in line %d. Token = %s\n",
             message, line_number+1, yytext);
 }
 
+int main(int argc, char *argv[]) {
+    yylex();
 
+    printf("---- finished ----\n");
+    printf("Number of keywords:    %d\n", keywords);
+    printf("Number of literals:    %d\n", literals);
+    printf("Number of types:       %d\n", types);
+    printf("Number of numbers:     %d\n", numbers);
+    printf("Number of identifiers: %d\n", identifiers);
+    printf("Number of operators:   %d\n", operators);
+    printf("Number of lines:       %d\n", line_number);
+
+    return EXIT_SUCCESS;
+}
