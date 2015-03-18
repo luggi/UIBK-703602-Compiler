@@ -1,3 +1,4 @@
+/* Huber Lukas, Alexander Hirsch, Patrick Ober, Michael Tscholl, Franz Josef Haider */
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +7,8 @@
 void toUpper(char *string);
 void toLower(char *string);
 %}
+
+%option noyywrap
 
 %x COMMENT
 
