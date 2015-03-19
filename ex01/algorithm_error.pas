@@ -3,7 +3,7 @@
 * Author: Paulo Roma
 * Date: 22/04/2008.
 * http://en.wikipedia.org/wiki/Heapsort
-* http://www2.hawaii.edu/~copley/665/HSApplet.html
+* http://www.codecodex.com/wiki/Heapsort#Pascal
 *)
 
 program Heap_Sort;
