@@ -36,7 +36,7 @@ lineend [\n]
 
 number [0-9]+
 
-identifier (?i:[[:alpha:]][[:alnum:]]*)
+identifier [[:alpha:]][[:alnum:]]*
 
 parentheses "("|")"|"["|"]"
 
@@ -56,7 +56,7 @@ comma ","
 {literal}	{literals++; printf("%s", yytext);};
 {type}		{types++; printf("%s", yytext);};
 {string}	{strings++; printf("%s", yytext);};
-{number}	{numbers++; printf("%s", yytext);};
+{number}{whitespace}|{number}{operator}	{numbers++; printf("%s", yytext);};
 {parentheses} {printf("%s", yytext);};
 {comma}		{printf("%s", yytext);};
 {identifier}            {toLower(yytext); identifiers++; printf("%s", yytext);}
