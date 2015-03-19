@@ -1,9 +1,11 @@
 LEX     = flex
 CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
 LDFLAGS =
-LDLIBS  = -lfl
+LDLIBS  =
 
-.PHONY: clean
+.PHONY: all clean
+
+all: new_sample simple_example
 
 new_sample: new_sample.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -14,10 +16,10 @@ new_sample.c: new_sample.l
 simple_example: simple_example.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-simple_example.c: new_sample.l
+simple_example.c: simple_example.l
 	$(LEX) -o $@ $^
-
 
 clean:
 	$(RM) -f *.o
-	$(RM) -f new_sample new_sample.c simple_example.c simple_example
+	$(RM) -f new_sample new_sample.c
+	$(RM) -f simple_example simple_example.c
