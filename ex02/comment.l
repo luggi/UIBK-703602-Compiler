@@ -33,10 +33,11 @@ int c_depth_max = 0;
 
 int main(int argc, char *argv[]) {
     yylex();
-    if(c_depth != 0)
-      printf("Not all comments were closed!\ntotal comments(open): %d\n", c_comment);
+
+    if (c_depth != 0)
+        printf("Not all comments were closed!\ntotal comments(open): %d\n", c_comment);
     else
-      printf("total comments: %d \tmax comment depth: %d\n",c_comment, c_depth_max);
+        printf("total comments: %d \tmax comment depth: %d\n",c_comment, c_depth_max);
 
     return EXIT_SUCCESS;
 }
