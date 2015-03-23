@@ -1,3 +1,7 @@
 comment_count
 comment_count.c
 comment_count.o
+
+comment
+comment.c
+comment.o
