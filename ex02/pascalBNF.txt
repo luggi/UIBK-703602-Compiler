@@ -37,4 +37,4 @@ multiplicative-expression ->  multiplicative-expression multiplicative-op primar
                               primary-expression
 multiplicative-op         ->  * | / | div | mod | and
 primary-expression        ->  variable | integer | real | string | function (expression-list);
-function      -> identifier
+function                  -> identifier
