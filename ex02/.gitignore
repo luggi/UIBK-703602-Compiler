@@ -5,3 +5,8 @@ comment_count.o
 comment
 comment.c
 comment.o
+
+ex01/a.out
+ex01/first exercise.l
+ex01/lex.yy.c
+ex01/pascalexample.pas
