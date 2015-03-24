@@ -24,9 +24,9 @@ void leave_comment(void);
 
 %%
 
-"(*"                    {BEGIN(COMMENT);enter_comment();}
+"(*"                    {enter_comment();}
 <COMMENT>"(*"           {enter_comment();}
-<COMMENT>"*)"           {BEGIN(INITIAL);leave_comment();}
+<COMMENT>"*)"           {leave_comment();}
 
  /* ignore everything else */
 .                       ;
@@ -37,6 +37,9 @@ void leave_comment(void);
 %%
 
 void enter_comment(void) {
+    if (depth == 0) {
+        BEGIN(COMMENT);
+    }
     count++;
     depth++;
     if (depth > max_depth) {
@@ -45,6 +48,9 @@ void enter_comment(void) {
 }
 
 void leave_comment(void) {
+    if (depth == 1) {
+        BEGIN(INITIAL);
+    }
     depth--;
 }
 
