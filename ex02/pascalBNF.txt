@@ -1,0 +1,40 @@
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - Patrick Ober
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ * Orginal: http://www2.informatik.uni-halle.de/lehre/pascal/sprache/pas_bnf.html
+ */
+
+pascal                    ->  program identifier ; block .
+identifier                ->  a-zA-Z
+identifier-list           ->  identifier | identifier-list , identifier
+block                     ->  block2 | variable-declaration ; block2
+block2                    ->  begin statement-list end
+variable-declaration      ->  var identifier-list : type |
+                              variable-declaration ; identifier-list : type
+type                      ->  integer | real | array [ index-list ] of type
+index-list                ->  integer .. integer
+statement-list            ->  statement | statement-list ; statement
+statement                 ->  variable := expression |
+                              begin statement-list end |
+                              if expression then statement |
+                              if expression then statement else statement |
+                              while expression do statement |
+                              for varid := for-list do statement
+variable                  ->  identifier | variable [ subscript-list ]
+subscript-list            ->  expression | subscript-list , expression
+for-list                  ->  expression to expression
+expression                ->  expression relational-op additive-expression |
+                              additive-expression
+expression-list           ->  expression | expression-list , expression
+relational-op             ->  < | <= | = | <> | => | >
+additive-expression       ->  additive-expression additive-op multiplicative-expression |
+                              multiplicative-expression
+additive-expression       ->  + | -
+multiplicative-expression ->  multiplicative-expression multiplicative-op primary-expression |
+                              primary-expression
+multiplicative-op         ->  * | / | div | mod | and
+primary-expression        ->  variable | integer | real | string | function (expression-list);
+function                  -> identifier

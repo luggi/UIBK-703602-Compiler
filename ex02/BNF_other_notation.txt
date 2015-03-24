@@ -1,0 +1,110 @@
+Pascal - Syntax in BNF Notation
+
+pascal-program: 
+   program identifier; block . 
+
+identifier-list: 
+   identifier  
+   identifier-list , identifier  
+
+identifier:
+	[a-zA-Z]
+
+
+block:  
+   block2  
+   variable-declaration ; block2  
+
+
+block2:  
+   begin statement-list end  
+
+
+variable-declaration:  
+   var identifier-list : type  
+   variable-declaration ; identifier-list : type  
+
+
+type:  
+	integer
+	real
+
+
+structured-type:  
+   array [ index-list ] of type  
+
+
+index-list:  
+   integer..integer 
+
+
+statement-list:  
+   statement  
+   statement-list ; statement  
+
+
+statement:  
+   variable := expression  
+   begin statement-list end  
+   if expression then statement 
+   if expression then statement else statement  
+   while expression do statement  
+   for varid := for-list do statement  
+   
+
+variable:  
+   identifier  
+   variable [ subscript-list ]  
+
+
+subscript-list:  
+   expression  
+   subscript-list , expression  
+
+
+for-list:  
+   expression to expression  
+
+
+expression-list:  
+   expression  
+   expression-list , expression  
+
+
+expression: 
+   expression relational-op additive-expression 
+   additive-expression  
+
+
+relational-op: 
+   <  <=  =  <>  =>  > 
+
+
+additive-expression: 
+   additive-expression additive-op multiplicative-expression 
+   multiplicative-expression  
+
+
+additive-op:
+   +  -  
+
+
+multiplicative-expression: 
+   multiplicative-expression multiplicative-op primary-expression:  
+   primary-expression:    
+
+
+multiplicative-op: 
+   *  /  div  mod  and 
+
+
+primary-expression:  
+   variable
+   integer
+   real  
+   string  
+   funcion ( expression-list )
+
+
+function:
+	identifier

@@ -1,0 +1,5 @@
+(* comment *)
+(* comment1 (* comment2 *) *)
+(* comment1 (* comment2 *) (* comment3 *) *)
+(* comment1 comment2 *) *)
+(* comment1 (* comment2 *)
