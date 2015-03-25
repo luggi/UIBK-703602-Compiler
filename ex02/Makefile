@@ -6,4 +6,4 @@ OUT     = comment_count comment
 all: $(OUT)
 
 clean:
-	$(RM) -f $(OUT)
+	$(RM) -f $(OUT) $(OUT:=.o) $(OUT:=.c)
