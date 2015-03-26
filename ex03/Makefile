@@ -1,9 +1,10 @@
 CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
-OUT     = comment
 
 .PHONY: all clean
 
-all: $(OUT)
+all: main
+
+main: main.o lexer.o
 
 clean:
-	$(RM) -f $(OUT) $(OUT:=.o) $(OUT:=.c)
+	$(RM) *.o main
