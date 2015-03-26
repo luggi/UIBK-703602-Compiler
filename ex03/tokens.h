@@ -66,8 +66,8 @@ enum token {
     /* literals */
     FALSE,
     TRUE,
-    NUMBER,
-    STRING,
+    NUM,
+    STR,
 
     /* identifier */
     IDENT

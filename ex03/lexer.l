@@ -77,8 +77,8 @@ real                    return REAL;
  /* literals */
 false                   return FALSE;
 true                    return TRUE;
-{number}                return NUMBER;
-{string}                return STRING;
+{number}                return NUM;
+{string}                return STR;
 
  /* identifier */
 {identifier}            return IDENT;

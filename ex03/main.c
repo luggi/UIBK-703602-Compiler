@@ -66,8 +66,8 @@ int main(int argc, char *argv[]) {
 
             case  FALSE:    puts("FALSE");    break;
             case  TRUE:     puts("TRUE");     break;
-            case  NUMBER:   puts("NUMBER");   break;
-            case  STRING:   puts("STRING");   break;
+            case  NUM:      puts("NUM");      break;
+            case  STR:      puts("STR");      break;
 
             case  IDENT:    puts("IDEN");     break;
 
