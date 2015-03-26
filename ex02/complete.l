@@ -81,10 +81,6 @@ identifiers   [a-zA-Z_][a-zA-Z0-9_]*
 <COMMENT1>\n                line_number++;
 <COMMENT1>.                 ;
 
-"(*"                        BEGIN(COMMENT2);
-<COMMENT2>"*)"              BEGIN(INITIAL);
-<COMMENT2>\n                line_number++;
-<COMMENT2>.                 ;
 
 "(*"                    {enter_comment();}
 <COMMENT>"(*"           {enter_comment();}
@@ -95,7 +91,7 @@ identifiers   [a-zA-Z_][a-zA-Z0-9_]*
 
 {whitespace}                ;
 
-.                           yyerror("no symbol");
+.                           yyerror("no symbol %d", line_number);
 
 %%
 
@@ -134,5 +130,7 @@ int main(int argc, char *argv[]) {
     printf("Number of operators:   %d\n", operators);
     printf("Number of lines:       %d\n", line_number);
 
+
+    printf("count:      %d\nmax. depth: %d\n", count, max_depth);
     return EXIT_SUCCESS;
 }
