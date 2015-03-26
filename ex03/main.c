@@ -12,68 +12,75 @@
 
 #include "tokens.h"
 
+
 extern int yylex(void);
+extern int yylineno;
+extern char *yytext;
+
+void print(char *token) {
+    printf("%3d :  %10s   %s\n", yylineno, token, yytext);
+}
 
 int main(int argc, char *argv[]) {
 
     while (true) {
         switch (yylex()) {
 
-            case  AND:      puts("AND");      break;
-            case  ARRAY:    puts("ARRAY");    break;
-            case  _BEGIN:   puts("_BEGIN");   break;
-            case  DIV:      puts("DIV");      break;
-            case  DO:       puts("DO");       break;
-            case  ELSE:     puts("ELSE");     break;
-            case  END:      puts("END");      break;
-            case  FOR:      puts("FOR");      break;
-            case  IF:       puts("IF");       break;
-            case  MOD:      puts("MOD");      break;
-            case  NOT:      puts("NOT");      break;
-            case  OF:       puts("OF");       break;
-            case  PROGRAM:  puts("PROGRAM");  break;
-            case  THEN:     puts("THEN");     break;
-            case  TO:       puts("TO");       break;
-            case  VAR:      puts("VAR");      break;
-            case  WHILE:    puts("WHILE");    break;
+            case  AND:      print("AND");      break;
+            case  ARRAY:    print("ARRAY");    break;
+            case  _BEGIN:   print("_BEGIN");   break;
+            case  DIV:      print("DIV");      break;
+            case  DO:       print("DO");       break;
+            case  ELSE:     print("ELSE");     break;
+            case  END:      print("END");      break;
+            case  FOR:      print("FOR");      break;
+            case  IF:       print("IF");       break;
+            case  MOD:      print("MOD");      break;
+            case  NOT:      print("NOT");      break;
+            case  OF:       print("OF");       break;
+            case  PROGRAM:  print("PROGRAM");  break;
+            case  THEN:     print("THEN");     break;
+            case  TO:       print("TO");       break;
+            case  VAR:      print("VAR");      break;
+            case  WHILE:    print("WHILE");    break;
 
-            case  ASTR:     puts("ASTR");     break;
-            case  PLUS:     puts("PLUS");     break;
-            case  COMMA:    puts("COMMA");    break;
-            case  MINUS:    puts("MINUS");    break;
-            case  DOT:      puts("DOT");      break;
-            case  DDOT:     puts("DDOT");     break;
-            case  SLASH:    puts("SLASH");    break;
-            case  COLON:    puts("COLON");    break;
-            case  ASGN:     puts("ASGN");     break;
-            case  SEMCO:    puts("SEMCO");    break;
-            case  LT:       puts("LT");       break;
-            case  LEQ:      puts("LEQ");      break;
-            case  NEQ:      puts("NEQ");      break;
-            case  EQ:       puts("EQ");       break;
-            case  GT:       puts("GT");       break;
-            case  GEQ:      puts("GEQ");      break;
-            case  CARET:    puts("CARET");    break;
+            case  ASTR:     print("ASTR");     break;
+            case  PLUS:     print("PLUS");     break;
+            case  COMMA:    print("COMMA");    break;
+            case  MINUS:    print("MINUS");    break;
+            case  DOT:      print("DOT");      break;
+            case  DDOT:     print("DDOT");     break;
+            case  SLASH:    print("SLASH");    break;
+            case  COLON:    print("COLON");    break;
+            case  ASGN:     print("ASGN");     break;
+            case  SEMCO:    print("SEMCO");    break;
+            case  LT:       print("LT");       break;
+            case  LEQ:      print("LEQ");      break;
+            case  NEQ:      print("NEQ");      break;
+            case  EQ:       print("EQ");       break;
+            case  GT:       print("GT");       break;
+            case  GEQ:      print("GEQ");      break;
+            case  CARET:    print("CARET");    break;
 
-            case  PAR_L:    puts("PAR_L");    break;
-            case  PAR_R:    puts("PAR_R");    break;
-            case  BRA_L:    puts("BRA_L");    break;
-            case  BRA_R:    puts("BRA_R");    break;
+            case  PAR_L:    print("PAR_L");    break;
+            case  PAR_R:    print("PAR_R");    break;
+            case  BRA_L:    print("BRA_L");    break;
+            case  BRA_R:    print("BRA_R");    break;
 
-            case  BOOL:     puts("BOOL");     break;
-            case  INTEGER:  puts("INTEGER");  break;
-            case  REAL:     puts("REAL");     break;
+            case  BOOL:     print("BOOL");     break;
+            case  INTEGER:  print("INTEGER");  break;
+            case  REAL:     print("REAL");     break;
 
-            case  FALSE:    puts("FALSE");    break;
-            case  TRUE:     puts("TRUE");     break;
-            case  NUM:      puts("NUM");      break;
-            case  STR:      puts("STR");      break;
+            case  FALSE:    print("FALSE");    break;
+            case  TRUE:     print("TRUE");     break;
+            case  NUM:      print("NUM");      break;
+            case  STR:      print("STR");      break;
 
-            case  IDENT:    puts("IDEN");     break;
+            case  IDENT:    print("IDEN");     break;
 
-            case  _EOF:     puts("EOF");      exit(0);
+            case  _EOF:     print("EOF");      exit(0);
 
-            default:        puts("unknown symbol");
+            default:        print("unknown symbol");
 
         }
     }
