@@ -7,4 +7,4 @@ all: main
 main: main.o lexer.o
 
 clean:
-	$(RM) *.o main
+	$(RM) *.o main lexer.c

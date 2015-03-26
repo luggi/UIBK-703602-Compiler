@@ -21,6 +21,13 @@ void print(char *token) {
     printf("%3d :  %10s   %s\n", yylineno, token, yytext);
 }
 
+void match(enum token) {
+    if (yylex() != token) {
+        fprintf(stderr, "%3d :  %10s   %s\n", yylineno, token, yytext);
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     while (true) {
@@ -78,7 +85,7 @@ int main(int argc, char *argv[]) {
 
             case  IDENT:    print("IDEN");     break;
 
-            case  _EOF:     print("EOF");      exit(0);
+            case  _EOF:     print("EOF");      exit(EXIT_SUCCESS);
 
             default:        print("unknown symbol");
 
