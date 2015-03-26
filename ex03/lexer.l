@@ -109,6 +109,7 @@ true                    return TRUE;
 %%
 
 void yyerror(char *message) {
-    fprintf(stderr, "Error: %s in line %d \"%s\"\n",
-            message, yylineno, yytext);
+    fprintf(stderr, "Error in line %d: %s \"%s\"\n", yylineno, message,
+            yytext);
+    exit(EXIT_FAILURE);
 }
