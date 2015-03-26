@@ -1,5 +1,5 @@
 CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
-OUT     = comment
+OUT     = comment complete
 
 .PHONY: all clean
 

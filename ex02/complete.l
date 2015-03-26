@@ -91,7 +91,7 @@ identifiers   [a-zA-Z_][a-zA-Z0-9_]*
 
 {whitespace}                ;
 
-.                           yyerror("no symbol %d", line_number);
+.                           yyerror("no symbol");
 
 %%
 
