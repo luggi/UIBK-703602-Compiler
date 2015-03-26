@@ -70,12 +70,13 @@ const char *token_string(const enum token t) {
     }
 }
 
+/* print token with line number and text */
 void print(const enum token t) {
     printf("%3d : %20s %10s\n", yylineno, token_string(t), yytext);
 }
 
 /* compares `expect` with next token, calls `exit()` on missmatch */
-void match(const enum token expect) {
+void expect(const enum token expect) {
     enum token read = yylex();
     if (read != expect) {
         fprintf(stderr, "Error in %d: read '%s', expected '%s'\n",
@@ -84,17 +85,42 @@ void match(const enum token expect) {
     }
 }
 
+/* print error message and exit */
+void fatal(const enum token t) {
+    fprintf(stderr, "Error in %d: unexpected token '%s'\n", yylineno,
+            token_string(t));
+    exit(EXIT_FAILURE);
+}
+
+void start() {
+    enum token t = yylex();
+    switch (t) {
+        case PAR_L:
+            expect(NUM);
+            expect(PLUS);
+            expect(NUM);
+            expect(PAR_R);
+            break;
+
+        case BRA_L:
+            expect(NUM);
+            expect(PLUS);
+            expect(NUM);
+            expect(BRA_R);
+            break;
+
+        default:
+            fatal(t);
+    }
+}
+
 int main(int argc, char *argv[]) {
 
-    while (true) {
-        enum token t = yylex();
-
-        if (t == _EOF) {
-            break;
-        }
-
-        print(t);
-    }
+    /* example:
+     * ( 1 + 2 )
+     * [ 1 + 2 ]
+     */
+    start();
 
     return EXIT_SUCCESS;
 }
