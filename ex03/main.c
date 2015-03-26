@@ -12,18 +12,74 @@
 
 #include "tokens.h"
 
-
 extern int yylex(void);
 extern int yylineno;
 extern char *yytext;
 
-void print(char *token) {
-    printf("%3d :  %10s   %s\n", yylineno, token, yytext);
+/* convert given token to string */
+const char *token_string(const enum token t) {
+    switch (t) {
+        case  AND:      return "and";
+        case  ARRAY:    return "array";
+        case  _BEGIN:   return "begin";
+        case  DIV:      return "div";
+        case  DO:       return "do";
+        case  ELSE:     return "else";
+        case  END:      return "end";
+        case  FOR:      return "for";
+        case  IF:       return "if";
+        case  MOD:      return "mod";
+        case  NOT:      return "not";
+        case  OF:       return "of";
+        case  PROGRAM:  return "program";
+        case  THEN:     return "then";
+        case  TO:       return "to";
+        case  VAR:      return "var";
+        case  WHILE:    return "while";
+        case  ASTR:     return "*";
+        case  PLUS:     return "+";
+        case  COMMA:    return ",";
+        case  MINUS:    return "-";
+        case  DOT:      return ".";
+        case  DDOT:     return "..";
+        case  SLASH:    return "/";
+        case  COLON:    return ":";
+        case  ASGN:     return ":=";
+        case  SEMCO:    return ";";
+        case  LT:       return "<";
+        case  LEQ:      return "<=";
+        case  NEQ:      return "<>";
+        case  EQ:       return "=";
+        case  GT:       return ">";
+        case  GEQ:      return ">=";
+        case  CARET:    return "^";
+        case  PAR_L:    return "(";
+        case  PAR_R:    return ")";
+        case  BRA_L:    return "[";
+        case  BRA_R:    return "]";
+        case  BOOL:     return "boolean";
+        case  INTEGER:  return "integer";
+        case  REAL:     return "real";
+        case  FALSE:    return "false";
+        case  TRUE:     return "true";
+        case  NUM:      return "number";
+        case  STR:      return "string";
+        case  IDENT:    return "identifier";
+        case  _EOF:     return "EOF";
+        default:        return "unknown symbol";
+    }
 }
 
-void match(enum token) {
-    if (yylex() != token) {
-        fprintf(stderr, "%3d :  %10s   %s\n", yylineno, token, yytext);
+void print(const enum token t) {
+    printf("%3d : %20s %10s\n", yylineno, token_string(t), yytext);
+}
+
+/* compares `expect` with next token, calls `exit()` on missmatch */
+void match(const enum token expect) {
+    enum token read = yylex();
+    if (read != expect) {
+        fprintf(stderr, "Error in %d: read '%s', expected '%s'\n",
+                yylineno, token_string(read), token_string(expect));
         exit(EXIT_FAILURE);
     }
 }
@@ -31,65 +87,13 @@ void match(enum token) {
 int main(int argc, char *argv[]) {
 
     while (true) {
-        switch (yylex()) {
+        enum token t = yylex();
 
-            case  AND:      print("AND");      break;
-            case  ARRAY:    print("ARRAY");    break;
-            case  _BEGIN:   print("_BEGIN");   break;
-            case  DIV:      print("DIV");      break;
-            case  DO:       print("DO");       break;
-            case  ELSE:     print("ELSE");     break;
-            case  END:      print("END");      break;
-            case  FOR:      print("FOR");      break;
-            case  IF:       print("IF");       break;
-            case  MOD:      print("MOD");      break;
-            case  NOT:      print("NOT");      break;
-            case  OF:       print("OF");       break;
-            case  PROGRAM:  print("PROGRAM");  break;
-            case  THEN:     print("THEN");     break;
-            case  TO:       print("TO");       break;
-            case  VAR:      print("VAR");      break;
-            case  WHILE:    print("WHILE");    break;
-
-            case  ASTR:     print("ASTR");     break;
-            case  PLUS:     print("PLUS");     break;
-            case  COMMA:    print("COMMA");    break;
-            case  MINUS:    print("MINUS");    break;
-            case  DOT:      print("DOT");      break;
-            case  DDOT:     print("DDOT");     break;
-            case  SLASH:    print("SLASH");    break;
-            case  COLON:    print("COLON");    break;
-            case  ASGN:     print("ASGN");     break;
-            case  SEMCO:    print("SEMCO");    break;
-            case  LT:       print("LT");       break;
-            case  LEQ:      print("LEQ");      break;
-            case  NEQ:      print("NEQ");      break;
-            case  EQ:       print("EQ");       break;
-            case  GT:       print("GT");       break;
-            case  GEQ:      print("GEQ");      break;
-            case  CARET:    print("CARET");    break;
-
-            case  PAR_L:    print("PAR_L");    break;
-            case  PAR_R:    print("PAR_R");    break;
-            case  BRA_L:    print("BRA_L");    break;
-            case  BRA_R:    print("BRA_R");    break;
-
-            case  BOOL:     print("BOOL");     break;
-            case  INTEGER:  print("INTEGER");  break;
-            case  REAL:     print("REAL");     break;
-
-            case  FALSE:    print("FALSE");    break;
-            case  TRUE:     print("TRUE");     break;
-            case  NUM:      print("NUM");      break;
-            case  STR:      print("STR");      break;
-
-            case  IDENT:    print("IDEN");     break;
-
-            case  _EOF:     print("EOF");      exit(EXIT_SUCCESS);
-
-            default:        print("unknown symbol");
-
+        if (t == _EOF) {
+            break;
         }
+
+        print(t);
     }
 
     return EXIT_SUCCESS;
