@@ -127,6 +127,9 @@ if __name__ == '__main__':
 
         for line in filter(None, options):
             words = line.split(' ')
+            if words[0] not in TOKENS:
+                print "Error: first element has to be a TOKEN ({})".format(words[0])
+                sys.exit(1)
             rules += "        case {}:\n".format(words[0])
             for w in words[1:]:
                 if w in TOKENS:
