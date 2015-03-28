@@ -4,7 +4,7 @@ CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
 
 all: main
 
-main: main.o lexer.o
+main: main.o lexer.o tokens.o
 
 clean:
 	$(RM) *.o main lexer.c

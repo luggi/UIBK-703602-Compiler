@@ -7,11 +7,15 @@
  */
 
 %{
+#include "lexer.h"
+
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "tokens.h"
 
-void yyerror(char *message);
+static void yyerror(const char *message);
+
 %}
 
 %option noyywrap
@@ -108,7 +112,7 @@ true                    return TRUE;
 
 %%
 
-void yyerror(char *message) {
+static void yyerror(const char *message) {
     fprintf(stderr, "Error in line %d: %s \"%s\"\n", yylineno, message,
             yytext);
     exit(EXIT_FAILURE);

@@ -1,5 +1,4 @@
-lexer.c
-lexer.o
+*.o
 
+lexer.c
 main
-main.o

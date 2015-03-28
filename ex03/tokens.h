@@ -74,4 +74,7 @@ enum token {
 
 };
 
+/* convert given token to string */
+const char *token_string(const enum token t);
+
 #endif
