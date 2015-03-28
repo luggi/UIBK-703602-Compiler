@@ -31,7 +31,39 @@ void no_match(const enum token t) {
 }
 
 /* rules */
-{{{RULES}}}
+{% for name in RULES %}
+void {{name}}(void);
+{% endfor %}
+
+{% for name, options in RULES.iteritems() %}
+void {{name}}(void) {
+    enum token t = yylex();
+    switch(t) {
+        {%- for line in options if line != '' %}
+            {%- for word in line.split(' ') %}
+                {%- if loop.first %}
+                    case {{word}}:
+                {%- else %}
+                    {%- if word in TOKENS %}
+                        expect({{word}});
+                    {%- else %}
+                        {{word}}();
+                    {%- endif %}
+                {%- endif %}
+            {%- endfor %}
+            break;
+        {%- endfor %}
+
+        {%- if '' in options %}
+        default:
+            no_match(t);
+        {%- else %}
+        default:
+            break;
+        {%- endif %}
+    }
+}
+{% endfor %}
 
 int main(int argc, char *argv[]) {
 

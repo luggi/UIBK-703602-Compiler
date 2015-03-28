@@ -10,7 +10,9 @@
 #define TOKENS_H
 
 enum token {
-{{{TOKENS}}}
+    {% for name in TOKENS %}
+    {{name}},
+    {% endfor %}
 };
 
 /* convert given token to string */

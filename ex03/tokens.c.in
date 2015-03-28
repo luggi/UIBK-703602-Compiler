@@ -12,6 +12,9 @@
 
 const char *token_string(const enum token t) {
     switch (t) {
-{{{TOKENS}}}
+        {% for name, string in TOKENS.iteritems() %}
+            case {{name}}: return "{{string}}";
+        {% endfor %}
+        default: return "unknown symbol";
     }
 }

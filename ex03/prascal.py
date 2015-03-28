@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 
-
 import sys
 
+from jinja2 import Template
 
 TOKENS = {
     # EOF = 0
@@ -67,7 +67,6 @@ TOKENS = {
     'IDENT' : 'identifier',
 }
 
-
 RULES = {
 
     'start': [
@@ -89,68 +88,5 @@ RULES = {
 
     }
 
-
-def replace(inputfilename, outputfilename, old, new):
-    with open(inputfilename, 'r') as fin:
-        with open(outputfilename, 'w') as fout:
-            for line in fin:
-                fout.write(line.replace(old, new))
-
-
 if __name__ == '__main__':
-
-    tokens = ''
-    for name,string in TOKENS.iteritems():
-        tokens += "        case {}: return \"{}\";\n".format(name, string)
-    tokens += "        default: return \"unknown symbol\";\n"
-
-    replace('tokens.c.in', 'tokens.c', '{{{TOKENS}}}', tokens)
-
-    tokens = ''
-    for name in TOKENS:
-        tokens += "    {},\n".format(name)
-
-    replace('tokens.h.in', 'tokens.h', '{{{TOKENS}}}', tokens)
-
-    rules = ''
-
-    for name in RULES:
-        rules += "void {}(void);\n".format(name)
-
-    rules += '\n'
-
-    for name,options in RULES.iteritems():
-
-        rules += "void {}(void) {{\n".format(name)
-        rules += "    enum token t = yylex();\n"
-        rules += "    switch (t) {\n"
-
-        for line in filter(None, options):
-            words = line.split(' ')
-            if words[0] not in TOKENS:
-                print "Error: first element has to be a TOKEN ({})".format(words[0])
-                sys.exit(1)
-            rules += "        case {}:\n".format(words[0])
-            for w in words[1:]:
-                if w in TOKENS:
-                    rules += "            expect({});\n".format(w)
-                elif w in RULES:
-                    rules += "            {}();\n".format(w)
-                else:
-                    print "Error: {} neither TOKEN nor RULE".format(w)
-                    sys.exit(1)
-
-            rules += "            break;\n"
-
-        if '' not in options:
-            rules += "        default:\n"
-            rules += "            no_match(t);\n"
-        else:
-            rules += "        default:\n"
-            rules += "            break;\n"
-
-        rules += "    }\n"
-        rules += "}\n"
-        rules += "\n"
-
-    replace('main.c.in', 'main.c', '{{{RULES}}}', rules)
+    print Template(sys.stdin.read()).render(RULES=RULES, TOKENS=TOKENS)
