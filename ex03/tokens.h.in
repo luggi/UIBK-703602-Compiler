@@ -1,0 +1,19 @@
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - Patrick Ober
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ */
+
+#ifndef TOKENS_H
+#define TOKENS_H
+
+enum token {
+{{{TOKENS}}}
+};
+
+/* convert given token to string */
+const char *token_string(const enum token t);
+
+#endif

@@ -2,3 +2,6 @@
 
 lexer.c
 main
+main.c
+tokens.c
+tokens.h

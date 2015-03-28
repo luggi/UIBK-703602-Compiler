@@ -1,0 +1,17 @@
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - Patrick Ober
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ */
+
+#include "tokens.h"
+
+#include <stdio.h>
+
+const char *token_string(const enum token t) {
+    switch (t) {
+{{{TOKENS}}}
+    }
+}
