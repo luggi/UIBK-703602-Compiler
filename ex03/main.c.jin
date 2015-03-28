@@ -31,10 +31,9 @@ void no_match(const enum token t) {
 }
 
 /* rules */
-{% for name in RULES %}
+{%- for name in RULES %}
 void {{name}}(void);
-{% endfor %}
-
+{%- endfor %}
 {% for name, options in RULES.iteritems() %}
 void {{name}}(void) {
     enum token t = yylex();
@@ -42,17 +41,17 @@ void {{name}}(void) {
         {%- for line in options if line != '' %}
             {%- for word in line.split(' ') %}
                 {%- if loop.first %}
-                    case {{word}}:
+        case {{word}}:
                 {%- else %}
                     {%- if word in TOKENS %}
-                        expect({{word}});
+            expect({{word}});
                     {%- else %}
-                        {{word}}();
+            {{word}}();
                     {%- endif %}
                 {%- endif %}
             {%- endfor %}
             break;
-        {%- endfor %}
+        {% endfor %}
 
         {%- if '' in options %}
         default:

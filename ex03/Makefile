@@ -8,13 +8,13 @@ main: main.o lexer.o tokens.o
 
 main.o: tokens.h
 
-main.c: main.c.in
+main.c: main.c.jin
 	python prascal.py < $< > $@
 
-tokens.c: tokens.c.in
+tokens.c: tokens.c.jin
 	python prascal.py < $< > $@
 
-tokens.h: tokens.h.in
+tokens.h: tokens.h.jin
 	python prascal.py < $< > $@
 
 clean:

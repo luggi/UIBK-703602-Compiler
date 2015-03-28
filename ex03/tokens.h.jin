@@ -10,7 +10,7 @@
 #define TOKENS_H
 
 enum token {
-    {% for name in TOKENS %}
+    {% for name in TOKENS -%}
     {{name}},
     {% endfor %}
 };

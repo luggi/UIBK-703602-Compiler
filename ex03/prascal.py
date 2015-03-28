@@ -75,6 +75,7 @@ RULES = {
 
     'varDec': [
         'VAR varDecList',
+        'SEMCO identListType SEMCO',
         '',
         ],
 
