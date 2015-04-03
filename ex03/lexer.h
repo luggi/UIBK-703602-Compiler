@@ -9,13 +9,13 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-/* returns next token */
-extern int yylex(void);
-
 /* current linenumber of lexer*/
 extern int yylineno;
 
 /* text of the current token */
 extern char *yytext;
+
+/* returns next token */
+extern int yylex(void);
 
 #endif
