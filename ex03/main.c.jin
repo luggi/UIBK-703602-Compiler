@@ -55,10 +55,10 @@ void {{name}}(void) {
 
         {%- if '' in options %}
         default:
-            no_match(t);
+            yyunlex();
         {%- else %}
         default:
-            break;
+            no_match(t);
         {%- endif %}
     }
 }

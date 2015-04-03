@@ -112,6 +112,12 @@ true                    return TRUE;
 
 %%
 
+void yyunlex(void) {
+    for (char *ptr = yytext + yyleng - 1; ptr >= yytext; ptr--) {
+        unput(*ptr);
+    }
+}
+
 static void yyerror(const char *message) {
     fprintf(stderr, "Error in line %d: %s \"%s\"\n", yylineno, message,
             yytext);
