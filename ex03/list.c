@@ -1,3 +1,11 @@
+/* Authors:
+ * - Huber Lukas
+ * - Alexander Hirsch
+ * - Patrick Ober
+ * - Michael Tscholl
+ * - Franz Josef Haider
+ */
+
 #include "list.h"
 
 #include <stdbool.h>
