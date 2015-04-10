@@ -137,6 +137,7 @@ void lexer_destroy(void) {
         free(node->data);
     }
     list_destroy(tokens);
+    yylex_destroy();
 }
 
 struct token *lexer_next(void) {
