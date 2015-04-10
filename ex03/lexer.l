@@ -164,7 +164,9 @@ struct token *lexer_next(void) {
 }
 
 void lexer_undo(void) {
-    count--;
+    if (count > 0) {
+        count--;
+    }
 }
 
 struct token *lexer_last(void) {
