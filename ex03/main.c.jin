@@ -13,6 +13,8 @@
 #include "lexer.h"
 #include "tokens.h"
 
+enum token_type last_tried = _EOF;
+
 /* check if next token is the one we expect */
 bool match(enum token_type type) {
     if (lexer_next()->type != type) {
@@ -37,9 +39,16 @@ bool {{name}}(void) {
         {%- endif %}
         {%- for word in line[1:] %}
             {%- if word in TOKENS %}
-        if (!match({{word}})) {lexer_restore(save); return false;}
+        if (!match({{word}})) {
+            last_tried = {{word}};
+            lexer_restore(save);
+            return false;
+        }
             {%- else %}
-        if (!{{word}}()) {lexer_restore(save); return false;}
+        if (!{{word}}()) {
+            lexer_restore(save);
+            return false;
+        }
             {%- endif %}
         {%- endfor %}
         return true;
@@ -67,8 +76,15 @@ int main(int argc, char *argv[]) {
         if (t == NULL) {
             fprintf(stderr, "no input\n");
         } else {
-            fprintf(stderr, "Error in %d: unexpected token '%s'\n", t->line,
-                    token_string(t));
+            if (last_tried != _EOF) {
+                fprintf(stderr, "Error in %d: unexpected token '%s', maybe "
+                        "missing a '%s'\n", t->line,
+                        token_type_string(t->type),
+                        token_type_string(last_tried));
+            } else {
+                fprintf(stderr, "Error in %d: unexpected token '%s'\n",
+                        t->line, token_type_string(t->type));
+            }
         }
     }
 

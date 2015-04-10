@@ -21,7 +21,7 @@ struct token {
     unsigned int line;
 };
 
-/* convert given token to string */
-const char *token_string(const struct token *t);
+/* convert given token type to string */
+const char *token_type_string(const enum token_type type);
 
 #endif
