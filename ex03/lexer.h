@@ -9,16 +9,27 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-/* current linenumber of lexer*/
-extern int yylineno;
+#include <stdbool.h>
 
-/* text of the current token */
-extern char *yytext;
+/* create lexer instance */
+bool lexer_create(void);
 
-/* returns next token */
-extern int yylex(void);
+/* destroy lexer instance */
+void lexer_destroy(void);
 
-/* put last read token back */
-void yyunlex(void);
+/* get next token from lexer */
+struct token *lexer_next(void);
+
+/* undo last next */
+void lexer_undo(void);
+
+/* returns last token in list */
+struct token *lexer_last(void);
+
+/* get current lexer position */
+unsigned long int lexer_save(void);
+
+/* set lexer position */
+void lexer_restore(unsigned long int saved);
 
 #endif

@@ -13,60 +13,65 @@
 #include "lexer.h"
 #include "tokens.h"
 
-/* compares `expect` with next token, calls `exit()` on missmatch */
-void expect(const enum token expect) {
-    enum token read = yylex();
-    if (read != expect) {
-        fprintf(stderr, "Error in %d: read '%s', expected '%s'\n",
-                yylineno, token_string(read), token_string(expect));
-        exit(EXIT_FAILURE);
+/* check if next token is the one we expect */
+bool match(enum token_type type) {
+    if (lexer_next()->type != type) {
+        lexer_undo();
+        return false;
     }
-}
-
-/* print error message and exit */
-void no_match(const enum token t) {
-    fprintf(stderr, "Error in %d: unexpected token '%s'\n", yylineno,
-            token_string(t));
-    exit(EXIT_FAILURE);
+    return true;
 }
 
 /* rules */
 {%- for name in RULES %}
-void {{name}}(void);
+bool {{name}}(void);
 {%- endfor %}
 {% for name, options in RULES.iteritems() %}
-void {{name}}(void) {
-    enum token t = yylex();
-    switch(t) {
-        {%- for line in options if line != '' %}
-            {%- for word in line.split(' ') %}
-                {%- if loop.first %}
-        case {{word}}:
-                {%- else %}
-                    {%- if word in TOKENS %}
-            expect({{word}});
-                    {%- else %}
-            {{word}}();
-                    {%- endif %}
-                {%- endif %}
-            {%- endfor %}
-            break;
-        {% endfor %}
-
-        {%- if '' in options %}
-        default:
-            yyunlex();
+bool {{name}}(void) {
+    unsigned long int save = lexer_save();
+    {%- for line in options if line != [] %}
+        {%- if line[0] in TOKENS %}
+    if (match({{line[0]}})) {
         {%- else %}
-        default:
-            no_match(t);
+    if ({{line[0]}}()) {
         {%- endif %}
+        {%- for word in line[1:] %}
+            {%- if word in TOKENS %}
+        if (!match({{word}})) {lexer_restore(save); return false;}
+            {%- else %}
+        if (!{{word}}()) {lexer_restore(save); return false;}
+            {%- endif %}
+        {%- endfor %}
+        return true;
     }
+    {%- endfor %}
+
+    {%- if [] in options %}
+    return true;
+    {%- else %}
+    return false;
+    {%- endif %}
 }
 {% endfor %}
 
 int main(int argc, char *argv[]) {
+    if (!lexer_create()) {
+        fprintf(stderr, "could not instantiate lexer\n");
+        exit(EXIT_FAILURE);
+    }
 
-    start();
+    if (start()) {
+        puts("input looks ok");
+    } else {
+        struct token *t = lexer_last();
+        if (t == NULL) {
+            fprintf(stderr, "no input\n");
+        } else {
+            fprintf(stderr, "Error in %d: unexpected token '%s'\n", t->line,
+                    token_string(t));
+        }
+    }
 
+    lexer_destroy();
     return EXIT_SUCCESS;
 }

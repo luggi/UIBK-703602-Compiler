@@ -70,21 +70,21 @@ TOKENS = {
 RULES = {
 
     'start': [
-        'PROGRAM IDENT SEMCO varDec DOT',
+        [ 'PROGRAM', 'IDENT', 'SEMCO', 'varDec', 'DOT' ],
         ],
 
     'varDec': [
-        'VAR varDecList',
-        'SEMCO identListType SEMCO',
-        '',
+        [ 'VAR', 'varDecList' ],
+        [],
         ],
 
     'varDecList': [
-        'SEMCO identListType SEMCO',
+        [ 'identListType', 'SEMCO', 'varDecList' ],
+        [],
         ],
 
     'identListType': [
-        'IDENT COLON INTEGER',
+        [ 'IDENT', 'COLON', 'INTEGER' ],
         ],
 
     }

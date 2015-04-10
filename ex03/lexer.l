@@ -9,10 +9,18 @@
 %{
 #include "lexer.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "list.h"
 #include "tokens.h"
+
+/* contains all read tokens */
+struct list_head *tokens = NULL;
+
+/* count number of tokens read */
+unsigned long int count = 0;
 
 static void yyerror(const char *message);
 
@@ -112,14 +120,66 @@ true                    return TRUE;
 
 %%
 
-void yyunlex(void) {
-    for (char *ptr = yytext + yyleng - 1; ptr >= yytext; ptr--) {
-        unput(*ptr);
+bool lexer_create(void) {
+    tokens = list_create();
+    if (tokens == NULL) {
+        return false;
     }
+    return true;
+}
+
+void lexer_destroy(void) {
+    for (struct list_node *node = tokens->first; node != NULL; node = node->next) {
+        free(node->data);
+    }
+    list_destroy(tokens);
+}
+
+struct token *lexer_next(void) {
+    struct token *t = NULL;
+    if (count < tokens->size) {
+        /* token has already been read by yylex */
+        t = (struct token *) list_get(tokens, count);
+    } else {
+        /* create token instance */
+        t = (struct token *) malloc(sizeof(struct token));
+        if (t == NULL) {
+            fprintf(stderr, "could not allocate token\n");
+            exit(EXIT_FAILURE);
+        }
+
+        /* read token */
+        t->type = yylex();
+        t->text = yytext;
+        t->line = yylineno;
+
+        /* store token */
+        if (list_append(tokens, t) < 0) {
+            fprintf(stderr, "could not append token to list\n");
+            exit(EXIT_FAILURE);;
+        }
+    }
+    count++;
+    return t;
+}
+
+void lexer_undo(void) {
+    count--;
+}
+
+struct token *lexer_last(void) {
+    return list_get(tokens, tokens->size - 1);
+}
+
+unsigned long int lexer_save(void) {
+    return count;
+}
+
+void lexer_restore(unsigned long int saved) {
+    count = saved;
 }
 
 static void yyerror(const char *message) {
-    fprintf(stderr, "Error in line %d: %s \"%s\"\n", yylineno, message,
-            yytext);
+    fprintf(stderr, "Error in %d: %s \"%s\"\n", yylineno, message, yytext);
     exit(EXIT_FAILURE);
 }
