@@ -14,6 +14,7 @@ TOKENS = {
     '_BEGIN'  : 'begin',
     'DIV'     : 'div',
     'DO'      : 'do',
+    'DOWNTO'  : 'downto',
     'ELSE'    : 'else',
     'END'     : 'end',
     'FOR'     : 'for',
@@ -21,11 +22,14 @@ TOKENS = {
     'MOD'     : 'mod',
     'NOT'     : 'not',
     'OF'      : 'of',
+    'OR'      : 'or',
     'PROGRAM' : 'program',
+    'READ'    : 'read',
     'THEN'    : 'then',
     'TO'      : 'to',
     'VAR'     : 'var',
     'WHILE'   : 'while',
+    'WRITE'   : 'write',
 
     # opreators
     'ASTR'  : '*',
@@ -53,15 +57,15 @@ TOKENS = {
     'BRA_R' : ']',
 
     # types
-    'BOOL'    : 'boolean',
+    'BOOLEAN' : 'boolean',
     'INTEGER' : 'integer',
     'REAL'    : 'real',
 
     # literals
-    'FALSE' : 'false',
-    'TRUE'  : 'true',
-    'NUM'   : 'number',
-    'STR'   : 'string',
+    'FALSE'  : 'false',
+    'TRUE'   : 'true',
+    'NUM'    : 'number',
+    'STRING' : 'string',
 
     # identifier
     'IDENT' : 'identifier',
@@ -70,7 +74,7 @@ TOKENS = {
 RULES = {
 
     'start': [
-        [ 'PROGRAM', 'IDENT', 'SEMCO', 'varDec', 'DOT' ],
+        [ 'PROGRAM', 'IDENT', 'SEMCO', 'varDec', 'compStmt', 'DOT' ],
         ],
 
     'varDec': [
@@ -79,12 +83,165 @@ RULES = {
         ],
 
     'varDecList': [
-        [ 'identListType', 'SEMCO', 'varDecList' ],
+        [ 'identListType', 'SEMCO', 'varDecList_' ],
+        ],
+
+    'varDecList_': [
+        [ 'varDecList' ],
         [],
         ],
 
     'identListType': [
-        [ 'IDENT', 'COLON', 'INTEGER' ],
+        [ 'identList', 'COLON', 'type' ],
+        ],
+
+    'identList': [
+        [ 'IDENT', 'identList_' ],
+        ],
+
+    'identList_': [
+        [ 'COMMA', 'identList' ],
+        [],
+        ],
+
+    'type': [
+        [ 'simpleType' ],
+        [ 'ARRAY', 'BRA_L', 'NUM', 'DDOT', 'NUM', 'BRA_R', 'OF', 'simpleType' ],
+        ],
+
+    'simpleType': [
+        [ 'INTEGER' ],
+        [ 'REAL' ],
+        [ 'BOOLEAN' ],
+        ],
+
+    'compStmt': [
+        [ '_BEGIN', 'stmtList', 'END' ],
+        ],
+
+    'stmtList': [
+        [ 'statement', 'stmtList_' ],
+        ],
+
+    'stmtList_': [
+        [ 'SEMCO', 'stmtList' ],
+        [],
+        ],
+
+    'statement': [
+        [ 'assignStmt' ],
+        [ 'compStmt' ],
+        [ 'ifStmt' ],
+        [ 'whileStmt' ],
+        [ 'forStmt' ],
+        [ 'READ', 'PAR_L', 'factorList', 'PAR_R' ],
+        [ 'WRITE', 'PAR_L', 'factorList', 'PAR_R' ],
+        ],
+
+    'assignStmt': [
+        [ 'IDENT', 'assignStmt_' ],
+        ],
+
+    'assignStmt_': [
+        [ 'ASGN', 'expr' ],
+        [ 'BRA_L', 'expr', 'BRA_R', 'ASGN', 'expr' ],
+        ],
+
+    'ifStmt': [
+        [ 'IF', 'expr', 'THEN', 'statement', 'elsePart' ],
+        ],
+
+    'elsePart': [
+        [ 'ELSE', 'statement' ],
+        [],
+        ],
+
+    'whileStmt': [
+        [ 'WHILE', 'expr', 'DO', 'statement' ],
+        ],
+
+    'forStmt': [
+        [ 'FOR', 'IDENT', 'ASGN', 'expr', 'toPart', 'expr', 'DO', 'statement' ],
+        ],
+
+    'toPart': [
+        [ 'TO' ],
+        [ 'DOWNTO' ],
+        ],
+
+    'expr': [
+        [ 'simpleExpr', 'expr_' ],
+        ],
+
+    'expr_': [
+        [ 'relOp', 'simpleExpr' ],
+        [],
+        ],
+
+    'simpleExpr': [
+        [ 'term', 'simpleExpr_' ],
+        ],
+
+    'simpleExpr_': [
+        [ 'addOp', 'simpleExpr' ],
+        [],
+        ],
+
+    'term': [
+        [ 'factor', 'term_' ],
+        ],
+
+    'term_': [
+        [ 'mulOp', 'term' ],
+        [],
+        ],
+
+    'factor': [
+        [ 'NUM' ],
+        [ 'STRING' ],
+        [ 'FALSE' ],
+        [ 'TRUE' ],
+        [ 'IDENT', 'factor_' ],
+        [ 'NOT', 'factor' ],
+        [ 'MINUS', 'factor' ],
+        [ 'PAR_L', 'expr', 'PAR_R' ],
+        ],
+
+    'factor_': [
+        [ 'BRA_L', 'expr', 'BRA_R' ],
+        [],
+        ],
+
+    'factorList': [
+        [ 'factor', 'factorList_' ],
+        ],
+
+    'factorList_': [
+        [ 'COMMA', 'factorList' ],
+        [],
+        ],
+
+    'relOp': [
+        [ 'LT' ],
+        [ 'LEQ' ],
+        [ 'GT' ],
+        [ 'GEQ' ],
+        [ 'EQ' ],
+        [ 'NEQ' ],
+        ],
+
+    'addOp': [
+        [ 'PLUS' ],
+        [ 'MINUS' ],
+        [ 'OR' ],
+        ],
+
+    'mulOp': [
+        [ 'ASTR' ],
+        [ 'SLASH' ],
+        [ 'DIV' ],
+        [ 'MOD' ],
+        [ 'AND' ],
         ],
 
     }

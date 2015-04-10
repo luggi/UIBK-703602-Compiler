@@ -43,6 +43,7 @@ identifier              [a-zA-Z_][a-zA-Z0-9_]*
 (?i:begin)              return _BEGIN;
 (?i:div)                return DIV;
 (?i:do)                 return DO;
+(?i:downto)             return DOWNTO;
 (?i:else)               return ELSE;
 (?i:end)                return END;
 (?i:for)                return FOR;
@@ -50,11 +51,14 @@ identifier              [a-zA-Z_][a-zA-Z0-9_]*
 (?i:mod)                return MOD;
 (?i:not)                return NOT;
 (?i:of)                 return OF;
+(?i:or)                 return OR;
 (?i:program)            return PROGRAM;
+(?i:read)               return READ;
 (?i:then)               return THEN;
 (?i:to)                 return TO;
 (?i:var)                return VAR;
 (?i:while)              return WHILE;
+(?i:write)              return WRITE;
 
  /* opreators */
 "*"                     return ASTR;
@@ -82,7 +86,7 @@ identifier              [a-zA-Z_][a-zA-Z0-9_]*
 "]"                     return BRA_R;
 
  /* types */
-boolean                 return BOOL;
+boolean                 return BOOLEAN;
 integer                 return INTEGER;
 real                    return REAL;
 
@@ -90,7 +94,7 @@ real                    return REAL;
 false                   return FALSE;
 true                    return TRUE;
 {number}                return NUM;
-{string}                return STR;
+{string}                return STRING;
 
  /* identifier */
 {identifier}            return IDENT;

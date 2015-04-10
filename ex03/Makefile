@@ -1,4 +1,4 @@
-CFLAGS  = -Wall -Werror -Wno-unused-function -std=gnu99
+CFLAGS  = -Wall -Werror -Wno-unused-function -Wno-unused-variable -std=gnu99
 
 .PHONY: all clean
 
