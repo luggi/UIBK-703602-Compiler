@@ -76,9 +76,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    if (start()) {
-        puts("input looks ok");
-    } else {
+    if (!start()) {
         struct token *t = lexer_last();
         if (t == NULL) {
             fprintf(stderr, "no input\n");
@@ -93,7 +91,11 @@ int main(int argc, char *argv[]) {
                         t->line, token_type_string(t->type));
             }
         }
+        lexer_destroy();
+        return EXIT_FAILURE;
     }
+
+    puts("input looks ok");
 
     lexer_destroy();
     return EXIT_SUCCESS;
