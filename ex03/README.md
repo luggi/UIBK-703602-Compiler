@@ -18,3 +18,14 @@ sheet and do the following tasks:
    in the previous task to get the next lookahead token.
 5. Stop the parse at the first syntactic error with a meaningful error message
    including the line number.
+
+## About
+
+This parser is based on [Roman Redziejowski's proposal] and is generated
+according to the grammar defined in `prascal.py`. The main template for the
+generation can be viewed in `main.c.jin`. [Python Jinja] is required in order
+to build this parser, installing it via [Python Pip] is recommended.
+
+[Roman Redziejowski's proposal]: <https://www2.informatik.hu-berlin.de/~hs/Aktivitaeten/2006_CSP/CSP06_28.pdf>
+[Python Jinja]: <http://jinja.pocoo.org/>
+[Python Pip]: <https://pip.pypa.io/en/stable/>
