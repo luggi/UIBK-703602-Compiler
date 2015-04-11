@@ -134,8 +134,8 @@ RULES = {
         [ 'ifStmt' ],
         [ 'whileStmt' ],
         [ 'forStmt' ],
-        [ 'READ', 'PAR_L', 'factorList', 'PAR_R' ],
-        [ 'WRITE', 'PAR_L', 'factorList', 'PAR_R' ],
+        [ 'READ', 'PAR_L', 'exprList', 'PAR_R' ],
+        [ 'WRITE', 'PAR_L', 'exprList', 'PAR_R' ],
         ],
 
     'assignStmt': [
@@ -178,6 +178,15 @@ RULES = {
         [],
         ],
 
+    'exprList': [
+        [ 'expr', 'exprList_' ],
+        ],
+
+    'exprList_': [
+        [ 'COMMA', 'exprList' ],
+        [],
+        ],
+
     'simpleExpr': [
         [ 'term', 'simpleExpr_' ],
         ],
@@ -209,15 +218,6 @@ RULES = {
 
     'factor_': [
         [ 'BRA_L', 'expr', 'BRA_R' ],
-        [],
-        ],
-
-    'factorList': [
-        [ 'factor', 'factorList_' ],
-        ],
-
-    'factorList_': [
-        [ 'COMMA', 'factorList' ],
         [],
         ],
 
