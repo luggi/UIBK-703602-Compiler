@@ -82,12 +82,12 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "no input\n");
         } else {
             if (last_tried != _EOF) {
-                fprintf(stderr, "Error in %d: unexpected token '%s', maybe "
+                fprintf(stderr, "Error: Line %d: unexpected token '%s', maybe "
                         "missing a '%s'\n", t->line,
                         token_type_string(t->type),
                         token_type_string(last_tried));
             } else {
-                fprintf(stderr, "Error in %d: unexpected token '%s'\n",
+                fprintf(stderr, "Error: Line %d: unexpected token '%s'\n",
                         t->line, token_type_string(t->type));
             }
         }

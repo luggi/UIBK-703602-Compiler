@@ -187,6 +187,6 @@ void lexer_restore(unsigned long int saved) {
 }
 
 static void yyerror(const char *message) {
-    fprintf(stderr, "Error in %d: %s \"%s\"\n", yylineno, message, yytext);
+    fprintf(stderr, "Error: Line %d: %s \"%s\"\n", yylineno, message, yytext);
     exit(EXIT_FAILURE);
 }
