@@ -18,3 +18,20 @@ sheet and do the following tasks:
    in the previous task to get the next lookahead token.
 5. Stop the parse at the first syntactic error with a meaningful error message
    including the line number.
+
+## Building
+
+Make should do everything for you, note that [Python Jinja] is required:
+
+    $ make
+
+[Python Jinja]: <http://jinja.pocoo.org/>
+
+## Running
+
+The parser reads from *stdin*, therefore:
+
+    $ ./main < sample.pas
+
+The parser will tell you whether your input has been accepted or the location
+where it got stuck. It may also hint a solution for the error if you are lucky.
