@@ -29,3 +29,18 @@ to build this parser, installing it via [Python Pip] is recommended.
 [Roman Redziejowski's proposal]: <https://www2.informatik.hu-berlin.de/~hs/Aktivitaeten/2006_CSP/CSP06_28.pdf>
 [Python Jinja]: <http://jinja.pocoo.org/>
 [Python Pip]: <https://pip.pypa.io/en/stable/>
+
+## Building
+
+Make should do everything for you, note that [Python Jinja] is required:
+
+    $ make
+
+## Running
+
+The parser reads from *stdin*, therefore:
+
+    $ ./main < sample.pas
+
+The parser will tell you whether your input has been accepted or the location
+where it got stuck. It may also hint a solution for the error if you are lucky.
