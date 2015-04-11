@@ -17,11 +17,12 @@ enum token_type last_tried = _EOF;
 
 /* check if next token is the one we expect */
 bool match(enum token_type type) {
-    printf("%20s\n", token_type_string(type));
     if (lexer_next()->type != type) {
         lexer_undo();
+        printf("Debug: rejecting %20s\n", token_type_string(type));
         return false;
     }
+    printf("Debug: accepting %20s\n", token_type_string(type));
     return true;
 }
 
@@ -31,7 +32,7 @@ bool {{name}}(void);
 {%- endfor %}
 {% for name, options in RULES.iteritems() %}
 bool {{name}}(void) {
-    puts("entering {{name}}");
+    puts("Debug: entering {{name}}");
     unsigned long int save = lexer_save();
     {%- for line in options if line != [] %}
         {%- if line[0] in TOKENS %}
@@ -44,27 +45,27 @@ bool {{name}}(void) {
         if (!match({{word}})) {
             last_tried = {{word}};
             lexer_restore(save);
-            puts("rejected {{name}}");
+            puts("Debug: rejected {{name}}");
             return false;
         }
             {%- else %}
         if (!{{word}}()) {
             lexer_restore(save);
-            puts("rejected {{name}}");
+            puts("Debug: rejected {{name}}");
             return false;
         }
             {%- endif %}
         {%- endfor %}
-        puts("accepted {{name}}");
+        puts("Debug: accepted {{name}}");
         return true;
     }
     {%- endfor %}
 
     {%- if [] in options %}
-    puts("accepted {{name}}");
+    puts("Debug: accepted {{name}}");
     return true;
     {%- else %}
-    puts("rejected {{name}}");
+    puts("Debug: rejected {{name}}");
     return false;
     {%- endif %}
 }
