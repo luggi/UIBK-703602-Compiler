@@ -246,5 +246,27 @@ RULES = {
 
     }
 
+
+def direct_descendant(options):
+    ret = []
+    for line in options:
+        if line == [] or line[0] in TOKENS:
+            ret.append(line)
+        elif line[0] in RULES:
+            for line2 in direct_descendant(RULES[line[0]]):
+                ret.append(line2 + line[1:])
+        else:
+            print "{} is neither TOKEN nor RULE".format(line[0])
+    return ret
+
+
+def direct_descendant_rules():
+    ret = {}
+    for name, options in RULES.iteritems():
+        ret[name] = direct_descendant(options)
+    return ret
+
+
 if __name__ == '__main__':
-    print Template(sys.stdin.read()).render(RULES=RULES, TOKENS=TOKENS)
+    rules = direct_descendant_rules();
+    print Template(sys.stdin.read()).render(RULES=rules, TOKENS=TOKENS)
