@@ -17,9 +17,11 @@ enum token_type last_tried = _EOF;
 
 /* check if next token is the one we expect */
 bool match(enum token_type type) {
-    if (lexer_next()->type != type) {
+    struct token *t = lexer_next();
+    if (t->type != type) {
         lexer_undo();
-        printf("Debug: rejecting %20s\n", token_type_string(type));
+        printf("Debug: rejecting %20s (wanted %s)\n",
+                token_type_string(t->type), token_type_string(type));
         return false;
     }
     printf("Debug: accepting %20s\n", token_type_string(type));
@@ -27,35 +29,20 @@ bool match(enum token_type type) {
 }
 
 /* rules */
-{%- for name in RULES %}
+{%- for name, options in RULES.iteritems() %}
 bool {{name}}(void);
+    {%- for option in options %}
+    bool {{name}}_{{loop.index0}}(void);
+    {%- endfor %}
 {%- endfor %}
+
 {% for name, options in RULES.iteritems() %}
 bool {{name}}(void) {
     puts("Debug: entering {{name}}");
     unsigned long int save = lexer_save();
+
     {%- for line in options if line != [] %}
-        {%- if line[0] in TOKENS %}
-    if (match({{line[0]}})) {
-        {%- else %}
-    if ({{line[0]}}()) {
-        {%- endif %}
-        {%- for word in line[1:] %}
-            {%- if word in TOKENS %}
-        if (!match({{word}})) {
-            last_tried = {{word}};
-            lexer_restore(save);
-            puts("Debug: rejected {{name}}");
-            return false;
-        }
-            {%- else %}
-        if (!{{word}}()) {
-            lexer_restore(save);
-            puts("Debug: rejected {{name}}");
-            return false;
-        }
-            {%- endif %}
-        {%- endfor %}
+    if ({{name}}_{{loop.index0}}()) {
         puts("Debug: accepted {{name}}");
         return true;
     }
@@ -69,7 +56,26 @@ bool {{name}}(void) {
     return false;
     {%- endif %}
 }
-{% endfor %}
+    {%- for line in options if line != [] %}
+bool {{name}}_{{loop.index0}}(void) {
+    puts("Debug: entering {{name}}_{{loop.index0}}");
+    unsigned long int save = lexer_save();
+    {%- for word in line %}
+        {%- if word in TOKENS %}
+    if (!match({{word}})) {
+        {%- else %}
+    if (!{{word}}()) {
+        {%- endif %}
+        puts("Debug: rejected {{name}}_{{loop.index0}}");
+        lexer_restore(save);
+        return false;
+    }
+    {%- endfor %}
+    return true;
+}
+    {%- endfor %}
+
+{%- endfor %}
 
 int main(int argc, char *argv[]) {
     if (!lexer_create()) {

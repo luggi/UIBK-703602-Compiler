@@ -83,12 +83,8 @@ RULES = {
         ],
 
     'varDecList': [
-        [ 'identListType', 'SEMCO', 'varDecList_' ],
-        ],
-
-    'varDecList_': [
-        [ 'varDecList' ],
-        [],
+        [ 'identListType', 'SEMCO', 'varDecList' ],
+        [ 'identListType', 'SEMCO' ],
         ],
 
     'identListType': [
@@ -96,12 +92,8 @@ RULES = {
         ],
 
     'identList': [
-        [ 'IDENT', 'identList_' ],
-        ],
-
-    'identList_': [
-        [ 'COMMA', 'identList' ],
-        [],
+        [ 'IDENT', 'COMMA', 'identList' ],
+        [ 'IDENT' ],
         ],
 
     'type': [
@@ -120,12 +112,8 @@ RULES = {
         ],
 
     'stmtList': [
-        [ 'statement', 'stmtList_' ],
-        ],
-
-    'stmtList_': [
-        [ 'SEMCO', 'stmtList' ],
-        [],
+        [ 'statement', 'SEMCO', 'stmtList' ],
+        [ 'statement' ],
         ],
 
     'statement': [
@@ -139,12 +127,9 @@ RULES = {
         ],
 
     'assignStmt': [
-        [ 'IDENT', 'assignStmt_' ],
-        ],
+        [ 'IDENT', 'ASGN', 'expr' ],
+        [ 'IDENT', 'BRA_L', 'expr', 'BRA_R', 'ASGN', 'expr' ],
 
-    'assignStmt_': [
-        [ 'ASGN', 'expr' ],
-        [ 'BRA_L', 'expr', 'BRA_R', 'ASGN', 'expr' ],
         ],
 
     'ifStmt': [
@@ -170,39 +155,24 @@ RULES = {
         ],
 
     'expr': [
-        [ 'simpleExpr', 'expr_' ],
-        ],
-
-    'expr_': [
-        [ 'relOp', 'simpleExpr' ],
-        [],
+        [ 'simpleExpr', 'relOp', 'simpleExpr' ],
+        [ 'simpleExpr' ],
         ],
 
     'exprList': [
-        [ 'expr', 'exprList_' ],
-        ],
-
-    'exprList_': [
-        [ 'COMMA', 'exprList' ],
-        [],
+        [ 'expr', 'COMMA', 'exprList' ],
+        [ 'expr' ],
         ],
 
     'simpleExpr': [
-        [ 'term', 'simpleExpr_' ],
+        [ 'term', 'addOp', 'simpleExpr' ],
+        [ 'term' ],
         ],
 
-    'simpleExpr_': [
-        [ 'addOp', 'simpleExpr' ],
-        [],
-        ],
 
     'term': [
-        [ 'factor', 'term_' ],
-        ],
-
-    'term_': [
-        [ 'mulOp', 'term' ],
-        [],
+        [ 'factor', 'mulOp', 'term' ],
+        [ 'factor' ],
         ],
 
     'factor': [
@@ -210,15 +180,11 @@ RULES = {
         [ 'STRING' ],
         [ 'FALSE' ],
         [ 'TRUE' ],
-        [ 'IDENT', 'factor_' ],
+        [ 'IDENT', 'BRA_L', 'expr', 'BRA_R' ],
+        [ 'IDENT' ],
         [ 'NOT', 'factor' ],
         [ 'MINUS', 'factor' ],
         [ 'PAR_L', 'expr', 'PAR_R' ],
-        ],
-
-    'factor_': [
-        [ 'BRA_L', 'expr', 'BRA_R' ],
-        [],
         ],
 
     'relOp': [
