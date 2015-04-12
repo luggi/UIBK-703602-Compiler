@@ -17,7 +17,6 @@ void lexer_create(void);
 /* destroy lexer instance */
 void lexer_destroy(void);
 
-
 /* returns next token */
 struct token lexer_next(void);
 

@@ -136,5 +136,6 @@ struct token lexer_next(void) {
 
 static void yyerror(const char *message) {
     fprintf(stderr, "Error: Line %d: %s \"%s\"\n", yylineno, message, yytext);
+    yylex_destroy();
     exit(EXIT_FAILURE);
 }
