@@ -13,20 +13,30 @@
 #include "lexer.h"
 #include "tokens.h"
 
+static struct token current;
+
 /* compares `expect` with next token, calls `exit()` on missmatch */
-void expect(const enum token expect) {
-    enum token read = yylex();
-    if (read != expect) {
-        fprintf(stderr, "Error in %d: read '%s', expected '%s'\n",
-                yylineno, token_string(read), token_string(expect));
+void match(const enum token_type expect) {
+    printf("Debug: testing %20s\n", current.text);
+
+    /* test current token */
+    if (current.type != expect) {
+        fprintf(stderr, "Error: Line %d: read '%s', expected '%s'\n",
+                current.line, token_type_string(current.type),
+                token_type_string(expect));
+        lexer_destroy();
         exit(EXIT_FAILURE);
     }
+
+    /* move on */
+    current = lexer_next();
 }
 
 /* print error message and exit */
-void no_match(const enum token t) {
-    fprintf(stderr, "Error in %d: unexpected token '%s'\n", yylineno,
-            token_string(t));
+void no_match() {
+    fprintf(stderr, "Error: Line %d: unexpected token '%s'\n", current.line,
+            token_type_string(current.type));
+    lexer_destroy();
     exit(EXIT_FAILURE);
 }
 
@@ -36,15 +46,17 @@ void {{name}}(void);
 {%- endfor %}
 {% for name, options in RULES.iteritems() %}
 void {{name}}(void) {
-    enum token t = yylex();
-    switch(t) {
-        {%- for line in options if line != '' %}
-            {%- for word in line.split(' ') %}
+    puts("Debug: enter {{name}}");
+    printf("Debug: testing %20s\n", current.text);
+    switch(current.type) {
+        {%- for line in options if line != [] %}
+            {%- for word in line %}
                 {%- if loop.first %}
         case {{word}}:
+                current = lexer_next();
                 {%- else %}
                     {%- if word in TOKENS %}
-            expect({{word}});
+            match({{word}});
                     {%- else %}
             {{word}}();
                     {%- endif %}
@@ -53,20 +65,32 @@ void {{name}}(void) {
             break;
         {% endfor %}
 
-        {%- if '' in options %}
-        default:
-            no_match(t);
-        {%- else %}
+        {%- if [] in options %}
         default:
             break;
+        {%- else %}
+        default:
+            puts("Debug: rejecting {{name}}");
+            no_match();
+            return;
         {%- endif %}
     }
+    puts("Debug: accept {{name}}");
 }
 {% endfor %}
 
 int main(int argc, char *argv[]) {
+    lexer_create();
 
+    /* read in first token */
+    current = lexer_next();
+
+    /* run parser, calls exit on failure */
     start();
+
+    puts("input looks ok");
+
+    lexer_destroy();
 
     return EXIT_SUCCESS;
 }

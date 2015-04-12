@@ -8,10 +8,8 @@
 
 #include "tokens.h"
 
-#include <stdio.h>
-
-const char *token_string(const enum token t) {
-    switch (t) {
+const char *token_type_string(const enum token_type type) {
+    switch (type) {
         {% for name, string in TOKENS.iteritems() -%}
         case {{name}}: return "{{string}}";
         {% endfor -%}

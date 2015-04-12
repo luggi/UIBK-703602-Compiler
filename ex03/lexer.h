@@ -9,13 +9,16 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-/* current linenumber of lexer*/
-extern int yylineno;
+#include "tokens.h"
 
-/* text of the current token */
-extern char *yytext;
+/* create lexer instance */
+void lexer_create(void);
+
+/* destroy lexer instance */
+void lexer_destroy(void);
+
 
 /* returns next token */
-extern int yylex(void);
+struct token lexer_next(void);
 
 #endif
