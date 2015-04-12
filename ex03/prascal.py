@@ -2,6 +2,7 @@
 
 import sys
 
+from collections import defaultdict
 from jinja2 import Template
 
 TOKENS = {
@@ -83,7 +84,7 @@ RULES = {
         ],
 
     'varDecList': [
-        [ 'identListType', 'SEMCO', 'varDecList' ],
+        [ 'varDecList', 'identListType', 'SEMCO' ],
         [ 'identListType', 'SEMCO' ],
         ],
 
@@ -92,7 +93,7 @@ RULES = {
         ],
 
     'identList': [
-        [ 'IDENT', 'COMMA', 'identList' ],
+        [ 'identList', 'COMMA', 'IDENT' ],
         [ 'IDENT' ],
         ],
 
@@ -112,7 +113,7 @@ RULES = {
         ],
 
     'stmtList': [
-        [ 'statement', 'SEMCO', 'stmtList' ],
+        [ 'stmtList', 'SEMCO', 'statement' ],
         [ 'statement' ],
         ],
 
@@ -160,18 +161,18 @@ RULES = {
         ],
 
     'exprList': [
-        [ 'expr', 'COMMA', 'exprList' ],
+        [ 'exprList', 'COMMA', 'expr' ],
         [ 'expr' ],
         ],
 
     'simpleExpr': [
-        [ 'term', 'addOp', 'simpleExpr' ],
+        [ 'simpleExpr', 'addOp', 'term' ],
         [ 'term' ],
         ],
 
 
     'term': [
-        [ 'factor', 'mulOp', 'term' ],
+        [ 'term', 'mulOp', 'factor' ],
         [ 'factor' ],
         ],
 
@@ -212,5 +213,43 @@ RULES = {
 
     }
 
+
+def remove_left_recursion(rules):
+
+    def get_immediate_alphas(name, options):
+        return [x[1:] for x in options if x != [] and x[0] == name]
+
+    def get_immediate_betas(name, options):
+        return [x for x in options if x == [] or x[0] != name]
+
+    def remove_immediate_left_recursion(name, options):
+        alphas = get_immediate_alphas(name, options)
+        if len(alphas) > 0:
+            for beta in get_immediate_betas(name, options):
+                new_rules[name].insert(0, beta + [name + '_'])
+            for alpha in alphas:
+                new_rules[name + '_'].insert(0, alpha + [name + '_'])
+            new_rules[name + '_'].append([])
+        else:
+            new_rules[name] = options
+
+    new_rules = defaultdict(list)
+
+    seen = set()
+    for i in rules:
+        seen.add(i)
+        for j in seen:
+            if i == j:
+                continue
+            for line in [x for x in rules[i] if x != [] and x[0] == j]:
+                for alpha in rules[j]:
+                    new_rules[i].insert(0, alpha + line[1:])
+
+        remove_immediate_left_recursion(i, rules[i])
+
+    return new_rules
+
+
 if __name__ == '__main__':
-    print Template(sys.stdin.read()).render(RULES=RULES, TOKENS=TOKENS)
+    rules = remove_left_recursion(RULES)
+    print Template(sys.stdin.read()).render(RULES=rules, TOKENS=TOKENS)
