@@ -13,8 +13,6 @@
 #include "lexer.h"
 #include "tokens.h"
 
-enum token_type last_tried = _EOF;
-
 /* check if next token is the one we expect */
 bool match(enum token_type type) {
     struct token *t = lexer_next();
@@ -88,15 +86,8 @@ int main(int argc, char *argv[]) {
         if (t == NULL) {
             fprintf(stderr, "no input\n");
         } else {
-            if (last_tried != _EOF) {
-                fprintf(stderr, "Error: Line %d: unexpected token '%s', maybe "
-                        "missing a '%s'\n", t->line,
-                        token_type_string(t->type),
-                        token_type_string(last_tried));
-            } else {
-                fprintf(stderr, "Error: Line %d: unexpected token '%s'\n",
-                        t->line, token_type_string(t->type));
-            }
+            fprintf(stderr, "Error: Line %d: unexpected token '%s'\n", t->line,
+                    token_type_string(t->type));
         }
         lexer_destroy();
         return EXIT_FAILURE;
