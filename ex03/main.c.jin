@@ -53,7 +53,7 @@ void {{name}}(void) {
             {%- for word in line %}
                 {%- if loop.first %}
         case {{word}}:
-                current = lexer_next();
+            current = lexer_next();
                 {%- else %}
                     {%- if word in TOKENS %}
             match({{word}});
