@@ -6,12 +6,14 @@ varDec                  : VAR varDecList
 varDecList              : identListType ; varDecList_
 
 varDecList_             : varDecList
+                        | eps
 
 identListType           : identList : type
 
 identList               : IDENT identList_
 
 identList_              : , identList
+                        | eps
 
 type                    : simpleType
                         | ARRAY [ NUM .. NUM ] OF simpleType
@@ -25,6 +27,7 @@ compStmt                : BEGIN stmtList END
 stmtList                : statement stmtList_
 
 stmtList_               : ; stmtList
+                        | eps
 
 statement               : assignStmt
                         | compStmt
@@ -55,14 +58,17 @@ expr                    : simpleExpr relOp simpleExpr
 exprList                : expr exprList_
 
 exprList_               : , exprList
+                        | eps
 
 simpleExpr              : term simpleExpr_
 
 simpleExpr_             : addOp simpleExpr
+                        | eps
 
 term                    : factor term_
 
 term_                   : mulOp term
+                        | eps
 
 factor                  : NUM
                         | STRING

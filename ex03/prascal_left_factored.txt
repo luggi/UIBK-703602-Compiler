@@ -1,16 +1,19 @@
 start                   : PROGRAM IDENT ; varDec compStmt .
 
 varDec                  : VAR varDecList
+                        | eps
 
 varDecList              : identListType ; varDecList_
 
 varDecList_             : varDecList
+                        | eps
 
 identListType           : identList : type
 
 identList               : IDENT identList_
 
 identList_              : , identList
+                        | eps
 
 type                    : simpleType
                         | ARRAY [ NUM .. NUM ] OF simpleType
@@ -24,6 +27,7 @@ compStmt                : BEGIN stmtList END
 stmtList                : statement stmtList_
 
 stmtList_               : ; stmtList
+                        | eps
 
 statement               : assignStmt
                         | compStmt
@@ -41,6 +45,7 @@ assignStmt_             : := expr
 ifStmt                  : IF expr THEN statement elsePart
 
 elsePart                : ELSE statement
+                        | eps
 
 whileStmt               : WHILE expr DO statement
 
@@ -52,18 +57,22 @@ toPart                  : TO
 expr                    : simpleExpr expr_
 
 expr_                   : relOp simpleExpr
+                        | eps
 
 exprList                : expr exprList_
 
 exprList_               : , exprList
+                        | eps
 
 simpleExpr              : term simpleExpr_
 
 simpleExpr_             : addOp simpleExpr
+                        | eps
 
 term                    : factor term_
 
 term_                   : mulOp term
+                        | eps
 
 factor                  : NUM
                         | STRING
@@ -75,6 +84,7 @@ factor                  : NUM
                         | ( expr )
 
 factor_                 : [ expr ]
+                        | eps
 
 relOp                   : <
                         | <=
