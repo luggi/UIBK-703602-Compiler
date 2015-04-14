@@ -44,22 +44,218 @@ void no_match(void) {
 }
 
 /* rules */
-/* TODO */
 void start(void);
+void varDecList(void);
+void type(void);
+void compStmt(void);
+void stmtList(void);
+void statement(void);
+void toPart(void);
+void expr(void);
+void simpleExpr(void);
+void term(void);
+void factor(void);
+
 void start(void) {
-    if (accept(PAR_L)) {
+    expect(PROGRAM);
+    expect(IDENT);
+    expect(SEMCO);
+    if (accept(VAR)) {
+        varDecList();
+    }
+    compStmt();
+    expect(DOT);
+}
+
+void varDecList(void) {
+    expect(IDENT);
+    do {
+        /* identList */
+        while (accept(COMMA)) {
+            expect(IDENT);
+        }
+        expect(COLON);
+        type();
+        expect(SEMCO);
+    } while (accept(IDENT));
+}
+
+void type(void) {
+    if (accept(ARRAY)) {
+        expect(BRA_L);
         expect(NUM);
-        expect(PLUS);
-        expect(NUM);
-        expect(PAR_R);
-    } else if (accept(BRA_L)) {
-        expect(NUM);
-        expect(PLUS);
+        expect(DDOT);
         expect(NUM);
         expect(BRA_R);
-    } else {
-        no_match();
+        expect(OF);
     }
+    if (accept(INTEGER)) {
+        return;
+    }
+    if (accept(REAL)) {
+        return;
+    }
+    if (accept(BOOLEAN)) {
+        return;
+    }
+    no_match();
+}
+
+void compStmt(void) {
+    expect(_BEGIN);
+    stmtList();
+    expect(END);
+}
+
+void stmtList(void) {
+    statement();
+    while (accept(SEMCO)) {
+        statement();
+    }
+}
+
+void statement(void) {
+    /* assignStmt */
+    if (accept(IDENT)) {
+        if (accept(BRA_L)) {
+            expr();
+            expect(BRA_R);
+        }
+        expect(ASGN);
+        expr();
+        return;
+    }
+
+    /* compStmt */
+    if (accept(_BEGIN)) {
+        stmtList();
+        expect(END);
+        return;
+    }
+
+    /* ifStmt */
+    if (accept(IF)) {
+        expr();
+        expect(THEN);
+        statement();
+        if (accept(ELSE)) {
+            statement();
+        }
+        return;
+    }
+
+    /* whileStmt */
+    if (accept(WHILE)) {
+        expr();
+        expect(DO);
+        statement();
+        return;
+    }
+
+    /* forStmt */
+    if (accept(FOR)) {
+        expect(IDENT);
+        expect(ASGN);
+        expr();
+        toPart();
+        expr();
+        expect(DO);
+        statement();
+        return;
+    }
+
+    /* READ */
+    if (accept(READ)) {
+        expect(PAR_L);
+        /* exprList */
+        expr();
+        while (accept(COMMA)) {
+            expr();
+        }
+        expect(PAR_R);
+        return;
+    }
+
+    /* WRITE */
+    if (accept(WRITE)) {
+        expect(PAR_L);
+        /* exprList */
+        expr();
+        while (accept(COMMA)) {
+            expr();
+        }
+        expect(PAR_R);
+        return;
+    }
+
+    no_match();
+}
+
+void toPart(void) {
+    if (accept(TO)) {
+        return;
+    }
+    if (accept(DOWNTO)) {
+        return;
+    }
+    no_match();
+}
+
+void expr(void) {
+    simpleExpr();
+    if (accept(LT) || accept(LEQ) || accept(GT) || accept(GEQ) || accept(EQ) || accept(NEQ)) {
+        simpleExpr();
+    }
+}
+
+void simpleExpr(void) {
+    term();
+    while (accept(PLUS) || accept(MINUS) || accept(OR)) {
+        term();
+    }
+}
+
+void term(void) {
+    factor();
+    while (accept(ASTR) || accept(SLASH) || accept(DIV) || accept(MOD) || accept(AND)) {
+        factor();
+    }
+}
+
+void factor(void) {
+    if (accept(NUM)) {
+        return;
+    }
+    if (accept(STRING)) {
+        return;
+    }
+    if (accept(FALSE)) {
+        return;
+    }
+    if (accept(TRUE)) {
+        return;
+    }
+    if (accept(IDENT)) {
+        if (accept(BRA_L)) {
+            expr();
+            expect(BRA_R);
+        }
+        return;
+    }
+    if (accept(NOT)) {
+        factor();
+        return;
+    }
+    if (accept(MINUS)) {
+        factor();
+        return;
+    }
+    if (accept(PAR_L)) {
+        expr();
+        expect(PAR_R);
+        return;
+    }
+    no_match();
 }
 
 int main(int argc, char *argv[]) {
