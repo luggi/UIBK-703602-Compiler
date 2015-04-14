@@ -1,0 +1,93 @@
+start                   : PROGRAM IDENT ; varDec compStmt .
+
+varDec                  : VAR varDecList
+                        | eps
+
+varDecList              : identListType ; varDecList_
+
+varDecList_             : varDecList
+
+identListType           : identList : type
+
+identList               : IDENT identList_
+
+identList_              : , identList
+
+type                    : simpleType
+                        | ARRAY [ NUM .. NUM ] OF simpleType
+
+simpleType              : INTEGER
+                        | REAL
+                        | BOOLEAN
+
+compStmt                : BEGIN stmtList END
+
+stmtList                : statement stmtList_
+
+stmtList_               : ; stmtList
+
+statement               : assignStmt
+                        | compStmt
+                        | ifStmt
+                        | whileStmt
+                        | forStmt
+                        | READ ( exprList )
+                        | WRITE ( exprList )
+
+assignStmt              : IDENT := expr
+                        | IDENT [ expr ] := expr
+
+ifStmt                  : IF expr THEN statement elsePart
+
+elsePart                : ELSE statement
+                        | eps
+
+whileStmt               : WHILE expr DO statement
+
+forStmt                 : FOR IDENT := expr toPart expr DO statement
+
+toPart                  : TO
+                        | DOWNTO
+
+expr                    : simpleExpr relOp simpleExpr
+                        | simpleExpr
+
+exprList                : expr exprList_
+
+exprList_               : , exprList
+
+simpleExpr              : term simpleExpr_
+
+simpleExpr_             : addOp simpleExpr
+
+term                    : factor term_
+
+term_                   : mulOp term
+
+factor                  : NUM
+                        | STRING
+                        | FALSE
+                        | TRUE
+                        | IDENT
+                        | IDENT [ expr ]
+                        | NOT factor
+                        | - factor
+                        | ( expr )
+
+relOp                   : <
+                        | <=
+                        | >
+                        | >=
+                        | =
+                        | <>
+
+addOp                   : +
+                        | -
+                        | OR
+
+mulOp                   : *
+                        | /
+                        | DIV
+                        | MOD
+                        | AND
+
