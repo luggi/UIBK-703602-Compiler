@@ -9,7 +9,7 @@
 #ifndef TOKENS_H
 #define TOKENS_H
 
-enum token {
+enum token_type {
 
     /* EOF = 0 */
     _EOF,
@@ -20,6 +20,7 @@ enum token {
     _BEGIN,
     DIV,
     DO,
+    DOWNTO,
     ELSE,
     END,
     FOR,
@@ -27,11 +28,14 @@ enum token {
     MOD,
     NOT,
     OF,
+    OR,
     PROGRAM,
+    READ,
     THEN,
     TO,
     VAR,
     WHILE,
+    WRITE,
 
     /* opreators */
     ASTR,
@@ -59,7 +63,7 @@ enum token {
     BRA_R,
 
     /* types */
-    BOOL,
+    BOOLEAN,
     INTEGER,
     REAL,
 
@@ -67,14 +71,20 @@ enum token {
     FALSE,
     TRUE,
     NUM,
-    STR,
+    STRING,
 
     /* identifier */
     IDENT
 
 };
 
-/* convert given token to string */
-const char *token_string(const enum token t);
+struct token {
+    enum token_type type;
+    char *text;
+    unsigned int line;
+};
+
+/* convert given token type to string */
+const char *token_type_string(const enum token_type type);
 
 #endif
