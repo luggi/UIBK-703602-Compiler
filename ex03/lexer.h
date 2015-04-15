@@ -11,8 +11,8 @@
 
 #include "tokens.h"
 
-/* create lexer instance */
-void lexer_create(void);
+/* create lexer instance and return first token */
+struct token lexer_create(void);
 
 /* destroy lexer instance */
 void lexer_destroy(void);

@@ -117,8 +117,8 @@ true                    return TRUE;
 
 %%
 
-void lexer_create(void) {
-    /* nothing to do */
+struct token lexer_create(void) {
+    return lexer_next();
 }
 
 void lexer_destroy(void) {

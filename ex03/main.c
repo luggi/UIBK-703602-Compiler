@@ -259,9 +259,7 @@ void factor(void) {
 }
 
 int main(int argc, char *argv[]) {
-    lexer_create();
-
-    current = lexer_next();
+    current = lexer_create();
 
     start();
 
