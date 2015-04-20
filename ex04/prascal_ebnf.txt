@@ -1,0 +1,66 @@
+start                   : PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.'
+
+varDecList              : IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' }
+
+type                    : [ ARRAY '[' NUM '..' NUM ']' OF ] simpleType
+
+simpleType              : INTEGER
+                        | REAL
+                        | BOOLEAN
+
+compStmt                : BEGIN stmtList END
+
+stmtList                : statement { ';' statement }
+
+statement               : assignStmt
+                        | compStmt
+                        | ifStmt
+                        | whileStmt
+                        | forStmt
+                        | READ '(' exprList ')'
+                        | WRITE '(' exprList ')'
+
+assignStmt              : IDENT [ '[' expr ']' ] ':=' expr
+
+ifStmt                  : IF expr THEN statement [ ELSE statement ]
+
+whileStmt               : WHILE expr DO statement
+
+forStmt                 : FOR IDENT ':=' expr toPart expr DO statement
+
+toPart                  : TO
+                        | DOWNTO
+
+expr                    : simpleExpr [ relOp simpleExpr ]
+
+exprList                : expr { ',' expr }
+
+simpleExpr              : term { addOp term }
+
+term                    : factor { mulOp factor }
+
+factor                  : NUM
+                        | STRING
+                        | FALSE
+                        | TRUE
+                        | IDENT [ '[' expr ']' ]
+                        | NOT factor
+                        | '-' factor
+                        | '(' expr ')'
+
+relOp                   : '<'
+                        | '<='
+                        | '>'
+                        | '>='
+                        | '='
+                        | '<>'
+
+addOp                   : '+'
+                        | '-'
+                        | OR
+
+mulOp                   : '*'
+                        | '/'
+                        | DIV
+                        | MOD
+                        | AND
