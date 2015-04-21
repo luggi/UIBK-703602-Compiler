@@ -4,7 +4,9 @@ override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable -std
 
 all: main
 
-main: main.o recovery.o lexer.o tokens.o
+main: main.o stack.o array.o recovery.o lexer.o tokens.o
+
+stack.o: array.o
 
 clean:
 	$(RM) *.o main lexer.c

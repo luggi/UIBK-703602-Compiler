@@ -11,20 +11,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "stack.h"
 #include "lexer.h"
 #include "recovery.h"
 #include "rules.h"
 #include "tokens.h"
 
+#define RULE_PREFIX(); \
+    if (panic_mode) { \
+        return; \
+    }
+
+#define RULE_SUFFIX(); \
+    if (panic_mode) { \
+        if (panic_recovery() == 1) { \
+            goto top; \
+        } else { \
+            stack_pop(call_stack); \
+            return; \
+        } \
+    } \
+    stack_pop(call_stack);
+
 /* holds the current token received from the lexer */
 static struct token current;
 
-/* holds current non-terminal */
-static void (*current_rule)(void);
+/* holds call path of non-terminal */
+static struct stack *call_stack;
+
+/* shows whether panic mode is on */
+static bool panic_mode = false;
 
 /* compares type with current token type, advances and returns true on match */
 bool accept(const enum token_type type, ...) {
-    if (current.type != type) {
+    if (panic_mode || current.type != type) {
         return false;
     }
     current = lexer_next();
@@ -47,35 +67,61 @@ bool accept_any(unsigned int num, ...) {
 
 /* compares type with current token, advances on match else call exit */
 void expect(const enum token_type type) {
+    if (panic_mode) {
+        return;
+    }
     if (!accept(type)) {
         fprintf(stderr, "Error: Line %d: read '%s', expected '%s'\n",
                 current.line, token_type_string(current.type),
                 token_type_string(type));
-        lexer_destroy();
-        exit(EXIT_FAILURE);
+
+        /* engage panic mode */
+        panic_mode = true;
     }
 }
 
-/* print error message and exit */
-void no_match(void) {
-    fprintf(stderr, "Error: Line %d: unexpected token '%s'", current.line,
-            token_type_string(current.type));
+/* scans a head until token in FIRST or FOLLOW is found returns 1 if token in
+ * FIRST, 2 if token in FOLLOW or exists if EOF is reached
+ */
+unsigned int panic_recovery(void) {
+    const struct rule_token_pair *first = recovery_lookup_first(
+            (void (*)(void)) stack_peek(call_stack));
+    const struct rule_token_pair *follow = recovery_lookup_follow(
+            (void (*)(void)) stack_peek(call_stack));
 
-    const struct rule_token_pair *pair = recovery_lookup_first(current_rule);
-    if (pair != NULL) {
-        fprintf(stderr, ", wanted one of ");
-        for (unsigned int i = 0; i < pair->num; i++) {
-            fprintf(stderr, "'%s' ", token_type_string(pair->types[i]));
+    while (current.type != _EOF) {
+        for (unsigned int i = 0; i < first->num; i++) {
+            if (first->types[i] == current.type) {
+                panic_mode = false;
+                fprintf(stderr, "Recover: Line %d: recovering using '%s'"
+                        " (FIRST)\n", current.line,
+                        token_type_string(current.type));
+                return 1;
+            }
         }
+        for (unsigned int i = 0; i < follow->num; i++) {
+            if (follow->types[i] == current.type) {
+                panic_mode = false;
+                fprintf(stderr, "Recover: Line %d: recovering using '%s'"
+                        " (FOLLOW)\n", current.line,
+                        token_type_string(current.type));
+                return 2;
+            }
+        }
+        current = lexer_next();
     }
-    fprintf(stderr, "\n");
+
+    fprintf(stderr, "Recover: EOF reached, could not recover\n");
     lexer_destroy();
     exit(EXIT_FAILURE);
 }
 
 void start(void) {
-    current_rule = start;
+    RULE_PREFIX();
 
+    stack_push(call_stack, start);
+
+top:
     expect(PROGRAM);
     expect(IDENT);
     expect(SEMCO);
@@ -84,11 +130,16 @@ void start(void) {
     }
     compStmt();
     expect(DOT);
+
+    RULE_SUFFIX();
 }
 
 void varDecList(void) {
-    current_rule = varDecList;
+    RULE_PREFIX();
 
+    stack_push(call_stack, varDecList);
+
+top:
     expect(IDENT);
     do {
         while (accept(COMMA)) {
@@ -98,11 +149,16 @@ void varDecList(void) {
         type();
         expect(SEMCO);
     } while (accept(IDENT));
+
+    RULE_SUFFIX();
 }
 
 void type(void) {
-    current_rule = type;
+    RULE_PREFIX();
 
+    stack_push(call_stack, type);
+
+top:
     if (accept(ARRAY)) {
         expect(BRA_L);
         expect(NUM);
@@ -114,32 +170,49 @@ void type(void) {
 
     /* simpleType */
     if (accept_any(3, INTEGER, REAL, BOOLEAN)) {
-        return;
+        goto ret;
     }
 
-    no_match();
+    /* must not be empty */
+    panic_mode = true;
+
+ret:
+    RULE_SUFFIX();
 }
 
 void compStmt(void) {
-    current_rule = compStmt;
+    RULE_PREFIX();
 
+    stack_push(call_stack, compStmt);
+
+top:
     expect(_BEGIN);
     stmtList();
     expect(END);
+
+    RULE_SUFFIX();
 }
 
 void stmtList(void) {
-    current_rule = stmtList;
+    RULE_PREFIX();
 
+    stack_push(call_stack, stmtList);
+
+top:
     statement();
     while (accept(SEMCO)) {
         statement();
     }
+
+    RULE_SUFFIX();
 }
 
 void statement(void) {
-    current_rule = statement;
+    RULE_PREFIX();
 
+    stack_push(call_stack, statement);
+
+top:
     /* assignStmt */
     if (accept(IDENT)) {
         if (accept(BRA_L)) {
@@ -148,14 +221,14 @@ void statement(void) {
         }
         expect(ASGN);
         expr();
-        return;
+        goto ret;
     }
 
     /* compStmt */
     if (accept(_BEGIN)) {
         stmtList();
         expect(END);
-        return;
+        goto ret;
     }
 
     /* ifStmt */
@@ -166,7 +239,7 @@ void statement(void) {
         if (accept(ELSE)) {
             statement();
         }
-        return;
+        goto ret;
     }
 
     /* whileStmt */
@@ -174,7 +247,7 @@ void statement(void) {
         expr();
         expect(DO);
         statement();
-        return;
+        goto ret;
     }
 
     /* forStmt */
@@ -186,7 +259,7 @@ void statement(void) {
         expr();
         expect(DO);
         statement();
-        return;
+        goto ret;
     }
 
     /* READ */
@@ -198,7 +271,7 @@ void statement(void) {
             expr();
         }
         expect(PAR_R);
-        return;
+        goto ret;
     }
 
     /* WRITE */
@@ -210,89 +283,126 @@ void statement(void) {
             expr();
         }
         expect(PAR_R);
-        return;
+        goto ret;
     }
 
-    no_match();
+    /* must not be empty */
+    panic_mode = true;
+
+ret:
+    RULE_SUFFIX();
 }
 
 void toPart(void) {
-    current_rule = toPart;
+    RULE_PREFIX();
 
+    stack_push(call_stack, toPart);
+
+top:
     if (accept_any(2, TO, DOWNTO)) {
-        return;
+        goto ret;
     }
 
-    no_match();
+    /* must not be empty */
+    panic_mode = true;
+
+ret:
+    RULE_SUFFIX();
 }
 
 void expr(void) {
-    current_rule = expr;
+    RULE_PREFIX();
 
+    stack_push(call_stack, expr);
+
+top:
     simpleExpr();
     /* relOp */
     if (accept_any(6, LT, LEQ, GT, GEQ, EQ, NEQ)) {
         simpleExpr();
     }
+
+    RULE_SUFFIX();
 }
 
 void simpleExpr(void) {
-    current_rule = simpleExpr;
+    RULE_PREFIX();
 
+    stack_push(call_stack, simpleExpr);
+
+top:
     term();
     /* addOp */
     while (accept_any(3, PLUS, MINUS, OR)) {
         term();
     }
+
+    RULE_SUFFIX();
 }
 
 void term(void) {
-    current_rule = term;
+    RULE_PREFIX();
 
+    stack_push(call_stack, term);
+
+top:
     factor();
     /* mulOp */
     while (accept_any(5, ASTR, SLASH, DIV, MOD, AND)) {
         factor();
     }
+
+    RULE_SUFFIX();
 }
 
 void factor(void) {
-    current_rule = factor;
+    RULE_PREFIX();
 
+    stack_push(call_stack, factor);
+
+top:
     if (accept(IDENT)) {
         /* subscript */
         if (accept(BRA_L)) {
             expr();
             expect(BRA_R);
         }
-        return;
+        goto ret;
     }
 
     if (accept_any(4, NUM, STRING, FALSE, TRUE)) {
-        return;
+        goto ret;
     }
 
     if (accept_any(2, NOT, MINUS)) {
         factor();
-        return;
+        goto ret;
     }
 
     if (accept(PAR_L)) {
         expr();
         expect(PAR_R);
-        return;
+        goto ret;
     }
 
-    no_match();
+    /* must not be empty */
+    panic_mode = true;
+
+ret:
+    RULE_SUFFIX();
 }
 
 int main(int argc, char *argv[]) {
     current = lexer_create();
 
+    call_stack = stack_create();
+
     start();
     expect(_EOF);
 
     puts("input looks ok");
+
+    stack_destroy(call_stack);
 
     lexer_destroy();
 
