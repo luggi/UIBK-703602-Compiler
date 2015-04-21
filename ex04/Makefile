@@ -1,4 +1,5 @@
-override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable -std=gnu99
+override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable \
+	                -Wno-unused-label -std=gnu99
 
 .PHONY: all clean
 
