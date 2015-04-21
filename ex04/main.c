@@ -112,6 +112,7 @@ unsigned int panic_recovery(void) {
     }
 
     fprintf(stderr, "Recover: EOF reached, could not recover\n");
+    stack_destroy(call_stack);
     lexer_destroy();
     exit(EXIT_FAILURE);
 }
