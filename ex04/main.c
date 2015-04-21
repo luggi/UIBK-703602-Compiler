@@ -14,6 +14,7 @@
 #include "lexer.h"
 #include "tokens.h"
 
+/* holds the current token received from the lexer */
 static struct token current;
 
 /* compares type with current token type, advances and returns true on match */
@@ -51,9 +52,20 @@ void expect(const enum token_type type) {
 }
 
 /* print error message and exit */
-void no_match(void) {
-    fprintf(stderr, "Error: Line %d: unexpected token '%s'\n", current.line,
+void no_match(unsigned int num, ...) {
+    fprintf(stderr, "Error: Line %d: unexpected token '%s'", current.line,
             token_type_string(current.type));
+    if (num > 0) {
+        fprintf(stderr, ", wanted one of ");
+        va_list ap;
+        va_start(ap, num);
+        for (unsigned int i = 0; i < num; i++) {
+            fprintf(stderr, "'%s' ", token_type_string(va_arg(ap,
+                            const enum token_type)));
+        }
+        va_end(ap);
+    }
+    fprintf(stderr, "\n");
     lexer_destroy();
     exit(EXIT_FAILURE);
 }
@@ -107,7 +119,7 @@ void type(void) {
     if (accept_any(3, INTEGER, REAL, BOOLEAN)) {
         return;
     }
-    no_match();
+    no_match(4, ARRAY, INTEGER, REAL, BOOLEAN);
 }
 
 void compStmt(void) {
@@ -197,14 +209,14 @@ void statement(void) {
         return;
     }
 
-    no_match();
+    no_match(7, IDENT, _BEGIN, IF, WHILE, FOR, READ, WRITE);
 }
 
 void toPart(void) {
     if (accept_any(2, TO, DOWNTO)) {
         return;
     }
-    no_match();
+    no_match(2, TO, DOWNTO);
 }
 
 void expr(void) {
@@ -252,7 +264,7 @@ void factor(void) {
         expect(PAR_R);
         return;
     }
-    no_match();
+    no_match(8, IDENT, NUM, STRING, FALSE, TRUE, NOT, MINUS, PAR_L);
 }
 
 int main(int argc, char *argv[]) {
