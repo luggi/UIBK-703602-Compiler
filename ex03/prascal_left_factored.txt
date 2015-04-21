@@ -3,9 +3,9 @@ start                   : PROGRAM IDENT ; varDec compStmt .
 varDec                  : VAR varDecList
                         | eps
 
-varDecList              : identListType ; varDecList_
+varDecList              : identListType varDecList_
 
-varDecList_             : varDecList
+varDecList_             : ; varDecList
                         | eps
 
 identListType           : identList : type
