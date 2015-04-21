@@ -12,10 +12,15 @@
 #include <stdlib.h>
 
 #include "lexer.h"
+#include "recovery.h"
+#include "rules.h"
 #include "tokens.h"
 
 /* holds the current token received from the lexer */
 static struct token current;
+
+/* holds current non-terminal */
+static void (*current_rule)(void);
 
 /* compares type with current token type, advances and returns true on match */
 bool accept(const enum token_type type, ...) {
@@ -52,38 +57,25 @@ void expect(const enum token_type type) {
 }
 
 /* print error message and exit */
-void no_match(unsigned int num, ...) {
+void no_match(void) {
     fprintf(stderr, "Error: Line %d: unexpected token '%s'", current.line,
             token_type_string(current.type));
-    if (num > 0) {
+
+    const struct rule_token_pair *pair = recovery_lookup_first(current_rule);
+    if (pair != NULL) {
         fprintf(stderr, ", wanted one of ");
-        va_list ap;
-        va_start(ap, num);
-        for (unsigned int i = 0; i < num; i++) {
-            fprintf(stderr, "'%s' ", token_type_string(va_arg(ap,
-                            const enum token_type)));
+        for (unsigned int i = 0; i < pair->num; i++) {
+            fprintf(stderr, "'%s' ", token_type_string(pair->types[i]));
         }
-        va_end(ap);
     }
     fprintf(stderr, "\n");
     lexer_destroy();
     exit(EXIT_FAILURE);
 }
 
-/* rules */
-void start(void);
-void varDecList(void);
-void type(void);
-void compStmt(void);
-void stmtList(void);
-void statement(void);
-void toPart(void);
-void expr(void);
-void simpleExpr(void);
-void term(void);
-void factor(void);
-
 void start(void) {
+    current_rule = start;
+
     expect(PROGRAM);
     expect(IDENT);
     expect(SEMCO);
@@ -95,6 +87,8 @@ void start(void) {
 }
 
 void varDecList(void) {
+    current_rule = varDecList;
+
     expect(IDENT);
     do {
         while (accept(COMMA)) {
@@ -107,6 +101,8 @@ void varDecList(void) {
 }
 
 void type(void) {
+    current_rule = type;
+
     if (accept(ARRAY)) {
         expect(BRA_L);
         expect(NUM);
@@ -115,20 +111,26 @@ void type(void) {
         expect(BRA_R);
         expect(OF);
     }
+
     /* simpleType */
     if (accept_any(3, INTEGER, REAL, BOOLEAN)) {
         return;
     }
-    no_match(4, ARRAY, INTEGER, REAL, BOOLEAN);
+
+    no_match();
 }
 
 void compStmt(void) {
+    current_rule = compStmt;
+
     expect(_BEGIN);
     stmtList();
     expect(END);
 }
 
 void stmtList(void) {
+    current_rule = stmtList;
+
     statement();
     while (accept(SEMCO)) {
         statement();
@@ -136,6 +138,8 @@ void stmtList(void) {
 }
 
 void statement(void) {
+    current_rule = statement;
+
     /* assignStmt */
     if (accept(IDENT)) {
         if (accept(BRA_L)) {
@@ -209,17 +213,22 @@ void statement(void) {
         return;
     }
 
-    no_match(7, IDENT, _BEGIN, IF, WHILE, FOR, READ, WRITE);
+    no_match();
 }
 
 void toPart(void) {
+    current_rule = toPart;
+
     if (accept_any(2, TO, DOWNTO)) {
         return;
     }
-    no_match(2, TO, DOWNTO);
+
+    no_match();
 }
 
 void expr(void) {
+    current_rule = expr;
+
     simpleExpr();
     /* relOp */
     if (accept_any(6, LT, LEQ, GT, GEQ, EQ, NEQ)) {
@@ -228,6 +237,8 @@ void expr(void) {
 }
 
 void simpleExpr(void) {
+    current_rule = simpleExpr;
+
     term();
     /* addOp */
     while (accept_any(3, PLUS, MINUS, OR)) {
@@ -236,6 +247,8 @@ void simpleExpr(void) {
 }
 
 void term(void) {
+    current_rule = term;
+
     factor();
     /* mulOp */
     while (accept_any(5, ASTR, SLASH, DIV, MOD, AND)) {
@@ -244,6 +257,8 @@ void term(void) {
 }
 
 void factor(void) {
+    current_rule = factor;
+
     if (accept(IDENT)) {
         /* subscript */
         if (accept(BRA_L)) {
@@ -252,19 +267,23 @@ void factor(void) {
         }
         return;
     }
+
     if (accept_any(4, NUM, STRING, FALSE, TRUE)) {
         return;
     }
+
     if (accept_any(2, NOT, MINUS)) {
         factor();
         return;
     }
+
     if (accept(PAR_L)) {
         expr();
         expect(PAR_R);
         return;
     }
-    no_match(8, IDENT, NUM, STRING, FALSE, TRUE, NOT, MINUS, PAR_L);
+
+    no_match();
 }
 
 int main(int argc, char *argv[]) {

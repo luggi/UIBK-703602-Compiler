@@ -1,10 +1,10 @@
-override CFLAGS  += -Wall -Werror -Wno-unused-function -std=gnu99
+override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable -std=gnu99
 
 .PHONY: all clean
 
 all: main
 
-main: main.o lexer.o tokens.o
+main: main.o recovery.o lexer.o tokens.o
 
 clean:
 	$(RM) *.o main lexer.c
