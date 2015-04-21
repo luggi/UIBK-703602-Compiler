@@ -262,6 +262,7 @@ int main(int argc, char *argv[]) {
     current = lexer_create();
 
     start();
+    expect(_EOF);
 
     puts("input looks ok");
 
