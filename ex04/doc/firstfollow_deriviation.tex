@@ -1,0 +1,288 @@
+\documentclass[8pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[left=1cm,top=1cm,right=2cm,nohead,nofoot]{geometry}
+
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\topmargin}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\partopsep}{0pt}
+
+\newcommand{\First}[1]{\mathrm{First}(#1)}
+\newcommand{\Follow}[1]{\mathrm{Follow}(#1)}
+
+\newcommand{\epsset}{\{\varepsilon\}}
+
+\begin{document}
+    \section{$\First{X}$ algorithm}
+        \begin{itemize}
+            \item If $X \in T\cup \epsset \Rightarrow \First{X} := \{ X \}$.
+            \item If $X \in N$, then $\forall X \rightarrow X_1 X_2 \dots X_n \in P \Rightarrow$
+                \begin{itemize}
+                    \item $\First{X} := \First{X} \cup \left(\First{X_1} \setminus \epsset\right)$
+                    \item If $\varepsilon \in \First{X_1} \wedge \dots \wedge \varepsilon \in \First{X_i} \wedge i<n \Rightarrow \First{X} := First{X} \cup \left(\First{X_{i+1}} \setminus \epsset\right)$.
+                    \item If $\forall i \in \{1, \dots, n\}\colon \varepsilon \in \First{X_i} \Rightarrow \First{X} := First{X} \cup \epsset$.
+                \end{itemize}
+        \end{itemize}
+        \section{$\First{X}$ derivation}
+        \begin{itemize}
+            \item $\First{start}$ derivation\newline
+                \begin{tabular}{|l | l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & add $\First{PROGRAM} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{start} = \{PROGRAM\}$.
+            \item $\First{varDecList}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & add $\First{IDENT} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{varDecList} = \{IDENT\}$.
+            \item $\First{type}$ derivation\newline
+                \begin{tabular}{|l |l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1} & \textbf{Iteration 2}\\
+                    \hline
+                    [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & add $\First{ARRAY}\setminus \epsset$ & add $\left(\First{simpleType} \setminus \epsset\right)$ \\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{type} = \{ARRAY\} \cup \First{simpleType} = \{ARRAY, INTEGER, REAL, BOOLEAN\}$.
+            \item $\First{simpleType}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    INTEGER & add $\First{INTEGER} \setminus \epsset$\\
+                    \hline
+                    REAL & add $\First{REAL} \setminus \epsset$\\
+                    \hline
+                    BOOLEAN & add $\First{BOOLEAN} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{simpleType} = \{INTEGER, REAL, BOOLEAN\}$.
+            \item $\First{compStmt}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    BEGIN stmtList END & add $\First{BEGIN} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{compStmt} = \{BEGIN\}$.
+            \item $\First{stmtList}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    statement { ';' statement } & add $\First{statement}$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{stmtList} = \{IDENT, BEGIN, IF, WHILE, FOR, READ, WRITE\}$.
+            \item $\First{statement}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    assignStmt & add $\First{assignStmt} \setminus \epsset$\\
+                    \hline
+                    compStmt & add $\First{compStmt} \setminus \epsset$\\
+                    \hline
+                    ifStmt & add $\First{ifStmt} \setminus \epsset$\\
+                    \hline
+                    whileStmt & add $\First{whileStmt} \setminus \epsset$\\
+                    \hline
+                    forStmt & add $\First{forStmt} \setminus \epsset$\\
+                    \hline
+                    READ '$($' exprList '$)$' & add $\First{READ} \setminus \epsset$\\
+                    \hline
+                    WRITE '$($' exprList '$)$' & add $\First{WRITE} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{statement} = \{IDENT, BEGIN, IF, WHILE, FOR, READ, WRITE\}$.
+            \item $\First{assignStmt}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    IDENT [ '$[$' expr '$]$' ] ':=' expr & add $\First{IDENT} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{assignStmt} = \{IDENT\}$.
+            \item $\First{ifStmt}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    IF expr THEN statement [ ELSE statement ] & add $\First{IF} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{ifStmt} = \{IF\}$.
+            \item $\First{whileStmt}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    WHILE expr DO statement & add $\First{WHILE} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{whileStmt} = \{WHILE\}$.
+            \item $\First{forStmt}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    FOR IDENT ':=' expr toPart expr DO statement & add $\First{FOR} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{forStmt} = \{FOR\}$.
+            \item $\First{toPart}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    TO & add $\First{TO} \setminus \epsset$\\
+                    \hline
+                    DOWNTO & add $\First{DOWNTO} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{toPart} = \{TO,DOWNTO\}$.
+            \item $\First{expr}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    simpleExpr [ relOp simpleExpr ] & add $\First{simpleExpr} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{expr} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
+            \item $\First{exprList}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    expr { ',' expr } & add $\First{expr} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{exprList} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
+            \item $\First{simpleExpr}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    term { addOp term } & add $\First{term} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{simpleExpr} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
+            \item $\First{term}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    factor { mulOp factor } & add $\First{factor} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{term} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
+            \item $\First{factor}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    NUM & add $\First{NUM} \setminus \epsset$\\
+                    \hline
+                    STRING & add $\First{STRING} \setminus \epsset$\\
+                    \hline
+                    FALSE & add $\First{FALSE} \setminus \epsset$\\
+                    \hline
+                    TRUE & add $\First{TRUE} \setminus \epsset$\\
+                    \hline
+                    IDENT [ '$[$' expr '$]$' ] & add $\First{IDENT} \setminus \epsset$\\
+                    \hline
+                    NOT factor & add $\First{NOT} \setminus \epsset$\\
+                    \hline
+                    '$-$' factor & add $\First{'$-$'} \setminus \epsset$\\
+                    \hline
+                    '$($' expr '$)$' & add $\First{'$)$'} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{factor} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
+            \item $\First{relOp}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    '$<$' & add $\First{\text{'$<$'}}$\\
+                    \hline
+                    '$<=$' & add $\First{\text{'$<=$'}}$\\
+                    \hline
+                    '$>$' & add $\First{\text{'$>$'}}$\\
+                    \hline
+                    '$>=$' & add $\First{\text{'$>=$'}}$\\
+                    \hline
+                    '$=$' & add $\First{\text{'$=$'}}$\\
+                    \hline
+                    '$<>$' & add $\First{\text{'$<>$'}}$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{relOp} = \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}\}$.
+            \item $\First{addOp}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    '$+$' & add $\First{'$+$'} \setminus \epsset$\\
+                    \hline
+                    '$-$' & add $\First{'$-$'} \setminus \epsset$\\
+                    \hline
+                    OR & add $\First{OR} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{addOp} = \{\text{'$+$'}, \text{'$-$'}, OR\}$.
+            \item $\First{mulOp}$ derivation\newline
+                \begin{tabular}{|l |l |}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                    \hline
+                    '$*$' & add $\First{'$*$'} \setminus \epsset$\\
+                    \hline
+                    '$/$' & add $\First{'$/$'} \setminus \epsset$\\
+                    \hline
+                    DIV & add $\First{DIV} \setminus \epsset$\\
+                    \hline
+                    MOD & add $\First{MOD} \setminus \epsset$\\
+                    \hline
+                    AND & add $\First{AND} \setminus \epsset$\\
+                    \hline
+                \end{tabular}\newline
+                $\Rightarrow \First{mulOp} = \{\text{'$*$'}, \text{'$/$'}, DIV, MOD, AND\}$.
+        \end{itemize}
+    \section{$\Follow{X}$ \textbf{algorithm}}
+        \begin{itemize}
+            \item If $A = S \Rightarrow \Follow{A} := \{\$\}$.
+            \item If $\left(\exists B \rightarrow \alpha A \gamma \in P\right) \Rightarrow \Follow{A} := \Follow{A} \cup \left(\First{\gamma} \setminus \epsset\right)$.
+            \item If $\left(\exists B \rightarrow \alpha A \gamma \in P\right) \wedge \varepsilon \in \First{\gamma} \Rightarrow \Follow{A} := \Follow{A} \cup \Follow{B}$.
+        \end{itemize}
+    \section{$\Follow{X}$ \textbf{deriviation}}
+        \begin{itemize}
+            \item $\Follow{start}$ deriviation\newline
+                $start$ is the start symbol of our grammar $\Rightarrow$ $\Follow{start} := \{\$\}$.\newline
+                \begin{tabular}{|l|l|}
+                \hline
+                \textbf{Grammar Rule} & \textbf{Iteration 1}\\
+                \hline
+                PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & TODO\\
+                \end{tabular}
+        \end{itemize}
+\end{document}
+

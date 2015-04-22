@@ -2,3 +2,7 @@
 
 lexer.c
 main
+*.aux
+*.log
+*.pdf
+
