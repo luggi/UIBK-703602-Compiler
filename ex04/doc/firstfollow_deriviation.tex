@@ -47,7 +47,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & add $\First{IDENT} \setminus \epsset$\\
+                    varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' \{ IDENT [ ',' IDENT ] ':' type ';' \} & add $\First{IDENT} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{varDecList} = \{IDENT\}$.
@@ -87,7 +87,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    stmtList $\rightarrow$ statement { ';' statement } & add $\First{statement}$\\
+                    stmtList $\rightarrow$ statement \{ ';' statement \} & add $\First{statement}$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{stmtList} = \{IDENT, BEGIN, IF, WHILE, FOR, READ, WRITE\}$.
@@ -173,7 +173,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    exprList $\rightarrow$ expr { ',' expr } & add $\First{expr} \setminus \epsset$\\
+                    exprList $\rightarrow$ expr \{ ',' expr \} & add $\First{expr} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{exprList} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -182,7 +182,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    simpleExpr $\rightarrow$ term { addOp term } & add $\First{term} \setminus \epsset$\\
+                    simpleExpr $\rightarrow$ term \{ addOp term \} & add $\First{term} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{simpleExpr} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -191,7 +191,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    term $\rightarrow$ factor { mulOp factor } & add $\First{factor} \setminus \epsset$\\
+                    term $\rightarrow$ factor \{ mulOp factor \} & add $\First{factor} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{term} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -286,9 +286,9 @@
                                                                                  $\Follow{compStmt} := \{\text{'.'}\}$
                                                                                 }\\
                 \hline
-                varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & $\Follow{type} := \{\text{';'}\}$\\
+                varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' \{ IDENT [ ',' IDENT ] ':' type ';' \} & $\Follow{type} := \{\text{';'}\}$\\
                 \hline
-                type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} := \Follow{type}$\\
+                type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} := \Follow{type} = \{\text{';'\}}$\\
                 \hline
                 \end{tabular}
         \end{itemize}
