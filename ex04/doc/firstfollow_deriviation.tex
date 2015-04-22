@@ -38,7 +38,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & add $\First{PROGRAM} \setminus \epsset$\\
+                    start $\rightarrow$ PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & add $\First{PROGRAM} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{start} = \{PROGRAM\}$.
@@ -47,7 +47,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & add $\First{IDENT} \setminus \epsset$\\
+                    varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & add $\First{IDENT} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{varDecList} = \{IDENT\}$.
@@ -56,7 +56,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1} & \textbf{Iteration 2}\\
                     \hline
-                    [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & add $\First{ARRAY}\setminus \epsset$ & add $\left(\First{simpleType} \setminus \epsset\right)$ \\
+                    type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & add $\First{ARRAY}\setminus \epsset$ & add $\left(\First{simpleType} \setminus \epsset\right)$ \\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{type} = \{ARRAY\} \cup \First{simpleType} = \{ARRAY, INTEGER, REAL, BOOLEAN\}$.
@@ -65,11 +65,11 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    INTEGER & add $\First{INTEGER} \setminus \epsset$\\
+                    simpleType $\rightarrow$ INTEGER & add $\First{INTEGER} \setminus \epsset$\\
                     \hline
-                    REAL & add $\First{REAL} \setminus \epsset$\\
+                    simpleType $\rightarrow$ REAL & add $\First{REAL} \setminus \epsset$\\
                     \hline
-                    BOOLEAN & add $\First{BOOLEAN} \setminus \epsset$\\
+                    simpleType $\rightarrow$ BOOLEAN & add $\First{BOOLEAN} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{simpleType} = \{INTEGER, REAL, BOOLEAN\}$.
@@ -78,7 +78,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    BEGIN stmtList END & add $\First{BEGIN} \setminus \epsset$\\
+                    compStmt $\rightarrow$ BEGIN stmtList END & add $\First{BEGIN} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{compStmt} = \{BEGIN\}$.
@@ -87,7 +87,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    statement { ';' statement } & add $\First{statement}$\\
+                    stmtList $\rightarrow$ statement { ';' statement } & add $\First{statement}$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{stmtList} = \{IDENT, BEGIN, IF, WHILE, FOR, READ, WRITE\}$.
@@ -96,19 +96,19 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    assignStmt & add $\First{assignStmt} \setminus \epsset$\\
+                    statement $\rightarrow$ assignStmt & add $\First{assignStmt} \setminus \epsset$\\
                     \hline
-                    compStmt & add $\First{compStmt} \setminus \epsset$\\
+                    statement $\rightarrow$ compStmt & add $\First{compStmt} \setminus \epsset$\\
                     \hline
-                    ifStmt & add $\First{ifStmt} \setminus \epsset$\\
+                    statement $\rightarrow$ ifStmt & add $\First{ifStmt} \setminus \epsset$\\
                     \hline
-                    whileStmt & add $\First{whileStmt} \setminus \epsset$\\
+                    statement $\rightarrow$ whileStmt & add $\First{whileStmt} \setminus \epsset$\\
                     \hline
-                    forStmt & add $\First{forStmt} \setminus \epsset$\\
+                    statement $\rightarrow$ forStmt & add $\First{forStmt} \setminus \epsset$\\
                     \hline
-                    READ '$($' exprList '$)$' & add $\First{READ} \setminus \epsset$\\
+                    statement $\rightarrow$ READ '$($' exprList '$)$' & add $\First{READ} \setminus \epsset$\\
                     \hline
-                    WRITE '$($' exprList '$)$' & add $\First{WRITE} \setminus \epsset$\\
+                    statement $\rightarrow$ WRITE '$($' exprList '$)$' & add $\First{WRITE} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{statement} = \{IDENT, BEGIN, IF, WHILE, FOR, READ, WRITE\}$.
@@ -117,7 +117,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    IDENT [ '$[$' expr '$]$' ] ':=' expr & add $\First{IDENT} \setminus \epsset$\\
+                    assignStmt $\rightarrow$ IDENT [ '$[$' expr '$]$' ] ':=' expr & add $\First{IDENT} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{assignStmt} = \{IDENT\}$.
@@ -126,7 +126,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    IF expr THEN statement [ ELSE statement ] & add $\First{IF} \setminus \epsset$\\
+                    ifStmt $\rightarrow$ IF expr THEN statement [ ELSE statement ] & add $\First{IF} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{ifStmt} = \{IF\}$.
@@ -135,7 +135,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    WHILE expr DO statement & add $\First{WHILE} \setminus \epsset$\\
+                    whileStmt $\rightarrow$ WHILE expr DO statement & add $\First{WHILE} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{whileStmt} = \{WHILE\}$.
@@ -144,7 +144,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    FOR IDENT ':=' expr toPart expr DO statement & add $\First{FOR} \setminus \epsset$\\
+                    forStmt $\rightarrow$ FOR IDENT ':=' expr toPart expr DO statement & add $\First{FOR} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{forStmt} = \{FOR\}$.
@@ -153,9 +153,9 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    TO & add $\First{TO} \setminus \epsset$\\
+                    toPart $\rightarrow$ TO & add $\First{TO} \setminus \epsset$\\
                     \hline
-                    DOWNTO & add $\First{DOWNTO} \setminus \epsset$\\
+                    toPart $\rightarrow$ DOWNTO & add $\First{DOWNTO} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{toPart} = \{TO,DOWNTO\}$.
@@ -164,7 +164,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    simpleExpr [ relOp simpleExpr ] & add $\First{simpleExpr} \setminus \epsset$\\
+                    expr $\rightarrow$ simpleExpr [ relOp simpleExpr ] & add $\First{simpleExpr} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{expr} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -173,7 +173,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    expr { ',' expr } & add $\First{expr} \setminus \epsset$\\
+                    exprList $\rightarrow$ expr { ',' expr } & add $\First{expr} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{exprList} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -182,7 +182,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    term { addOp term } & add $\First{term} \setminus \epsset$\\
+                    simpleExpr $\rightarrow$ term { addOp term } & add $\First{term} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{simpleExpr} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -191,7 +191,7 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    factor { mulOp factor } & add $\First{factor} \setminus \epsset$\\
+                    term $\rightarrow$ factor { mulOp factor } & add $\First{factor} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{term} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -200,21 +200,21 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    NUM & add $\First{NUM} \setminus \epsset$\\
+                    factor $\rightarrow$ NUM & add $\First{NUM} \setminus \epsset$\\
                     \hline
-                    STRING & add $\First{STRING} \setminus \epsset$\\
+                    factor $\rightarrow$ STRING & add $\First{STRING} \setminus \epsset$\\
                     \hline
-                    FALSE & add $\First{FALSE} \setminus \epsset$\\
+                    factor $\rightarrow$ FALSE & add $\First{FALSE} \setminus \epsset$\\
                     \hline
-                    TRUE & add $\First{TRUE} \setminus \epsset$\\
+                    factor $\rightarrow$ TRUE & add $\First{TRUE} \setminus \epsset$\\
                     \hline
-                    IDENT [ '$[$' expr '$]$' ] & add $\First{IDENT} \setminus \epsset$\\
+                    factor $\rightarrow$ IDENT [ '$[$' expr '$]$' ] & add $\First{IDENT} \setminus \epsset$\\
                     \hline
-                    NOT factor & add $\First{NOT} \setminus \epsset$\\
+                    factor $\rightarrow$ NOT factor & add $\First{NOT} \setminus \epsset$\\
                     \hline
-                    '$-$' factor & add $\First{'$-$'} \setminus \epsset$\\
+                    factor $\rightarrow$ '$-$' factor & add $\First{'$-$'} \setminus \epsset$\\
                     \hline
-                    '$($' expr '$)$' & add $\First{'$)$'} \setminus \epsset$\\
+                    factor $\rightarrow$ '$($' expr '$)$' & add $\First{'$)$'} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{factor} = \{NUM, STRING, FALSE, TRUE, IDENT, NOT, \text{'$-$'}, \text{'$($'}\}$.
@@ -223,17 +223,17 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    '$<$' & add $\First{\text{'$<$'}}$\\
+                    relOp $\rightarrow$ '$<$' & add $\First{\text{'$<$'}}$\\
                     \hline
-                    '$<=$' & add $\First{\text{'$<=$'}}$\\
+                    relOp $\rightarrow$ '$<=$' & add $\First{\text{'$<=$'}}$\\
                     \hline
-                    '$>$' & add $\First{\text{'$>$'}}$\\
+                    relOp $\rightarrow$ '$>$' & add $\First{\text{'$>$'}}$\\
                     \hline
-                    '$>=$' & add $\First{\text{'$>=$'}}$\\
+                    relOp $\rightarrow$ '$>=$' & add $\First{\text{'$>=$'}}$\\
                     \hline
-                    '$=$' & add $\First{\text{'$=$'}}$\\
+                    relOp $\rightarrow$ '$=$' & add $\First{\text{'$=$'}}$\\
                     \hline
-                    '$<>$' & add $\First{\text{'$<>$'}}$\\
+                    relOp $\rightarrow$ '$<>$' & add $\First{\text{'$<>$'}}$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{relOp} = \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}\}$.
@@ -242,11 +242,11 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    '$+$' & add $\First{'$+$'} \setminus \epsset$\\
+                    addOp $\rightarrow$ '$+$' & add $\First{'$+$'} \setminus \epsset$\\
                     \hline
                     '$-$' & add $\First{'$-$'} \setminus \epsset$\\
                     \hline
-                    OR & add $\First{OR} \setminus \epsset$\\
+                    addOp $\rightarrow$ OR & add $\First{OR} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{addOp} = \{\text{'$+$'}, \text{'$-$'}, OR\}$.
@@ -255,15 +255,15 @@
                     \hline
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
-                    '$*$' & add $\First{'$*$'} \setminus \epsset$\\
+                    mulOp $\rightarrow$ '$*$' & add $\First{'$*$'} \setminus \epsset$\\
                     \hline
-                    '$/$' & add $\First{'$/$'} \setminus \epsset$\\
+                    mulOp $\rightarrow$ '$/$' & add $\First{'$/$'} \setminus \epsset$\\
                     \hline
-                    DIV & add $\First{DIV} \setminus \epsset$\\
+                    mulOp $\rightarrow$ DIV & add $\First{DIV} \setminus \epsset$\\
                     \hline
-                    MOD & add $\First{MOD} \setminus \epsset$\\
+                    mulOp $\rightarrow$ MOD & add $\First{MOD} \setminus \epsset$\\
                     \hline
-                    AND & add $\First{AND} \setminus \epsset$\\
+                    mulOp $\rightarrow$ AND & add $\First{AND} \setminus \epsset$\\
                     \hline
                 \end{tabular}\newline
                 $\Rightarrow \First{mulOp} = \{\text{'$*$'}, \text{'$/$'}, DIV, MOD, AND\}$.
@@ -282,13 +282,13 @@
                 \hline
                 \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                 \hline
-                PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & \makecell[l]{$\Follow{varDecList} := \First{compStmt} \setminus \epsset = \{BEGIN\}$\\
+                start $\rightarrow$ PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & \makecell[l]{$\Follow{varDecList} := \First{compStmt} \setminus \epsset = \{BEGIN\}$\\
                                                                                  $\Follow{compStmt} := \{\text{'.'}\}$
                                                                                 }\\
                 \hline
-                IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & $\Follow{type} := \{\text{';'}\}$\\
+                varDecList $\rightarrow$ IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & $\Follow{type} := \{\text{';'}\}$\\
                 \hline
-                [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} := \Follow{type}$\\
+                type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} := \Follow{type}$\\
                 \hline
                 \end{tabular}
         \end{itemize}
