@@ -283,10 +283,10 @@
                     \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                     \hline
                     start $\rightarrow$ PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & \makecell[l]{$\Follow{varDecList} \cup = \First{compStmt} \setminus \epsset = \{BEGIN\}$\\
-                                                                                     $\Follow{compStmt} \cup = \{\text{'.'}\}$
+                                                                                     $\Follow{compStmt} \cup = \First{\{\text{'.'}\}} \setminus \epsset = \{\text{'.'}\}$
                                                                                     }\\
                     \hline
-                    \makecell[l]{varDecList $\rightarrow$ IDENT [ ',' IDENT ]\\ ':' type ';' \{ IDENT [ ',' IDENT ] ':' type ';' \}} & $\Follow{type} \cup = \{\text{';'}\}$\\
+                    \makecell[l]{varDecList $\rightarrow$ IDENT [ ',' IDENT ]\\ ':' type ';' \{ IDENT [ ',' IDENT ] ':' type ';' \}} & $\Follow{type} \cup = \First{\{\text{';'}\}} \setminus \epsset = \{\text{';'}\}$\\
                     \hline
                     type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} \cup = \Follow{type} = \{\text{';'\}}$\\
                     \hline
@@ -318,7 +318,7 @@
                     \hline
                     ifStmt $\rightarrow$ IF expr THEN statement [ ELSE statement ] & \makecell[l]{$\Follow{expr} \cup = \First{THEN} \setminus \epsset = \{\text{'$]$'}, THEN\}$\\ $\Follow{statement} \cup = \First{ELSE} \setminus \epsset = \{\text{';'}, ELSE, END\}$\\ $\Follow{statement} \cup = \Follow{ifStmt} = \{\text{';'}, ELSE, END\}$}\\
                     \hline
-                    whileStmt $\rightarrow$ WHILE expr DO statement & \makecell[l]{$\Follow{expr} \cup = \First{DO} = \{\text{']'}, THEN, DO\}$\\ $\Follow{statement} \cup = \Follow{whileStmt} = \{';', ELSE, END\}$}\\
+                    whileStmt $\rightarrow$ WHILE expr DO statement & \makecell[l]{$\Follow{expr} \cup = \First{DO} \setminus \epsset = \{\text{']'}, THEN, DO\}$\\ $\Follow{statement} \cup = \Follow{whileStmt} = \{';', ELSE, END\}$}\\
                     \hline
                     forStmt $\rightarrow$ FOR IDENT ':=' expr toPart expr DO statement & \makecell[l]{$\Follow{expr} \cup = \First{toPart} \setminus \epsset $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO\}$\\$\Follow{expr} \cup = \First{DO} \setminus \epsset $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO\}$\\ $\Follow{statement} \cup = \Follow{forStmt} = \{\text{'$]$'}, ELSE, END\}$}\\
                     \hline
@@ -328,7 +328,7 @@
                     \hline
                     expr $\rightarrow$ simpleExpr [ relOp simpleExpr ] & \makecell[l]{$\Follow{simpleExpr} \cup = \First{relOp} \setminus \epsset $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}\}$\\ $\Follow{simpleExpr} \cup = \Follow{expr} $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}, TO, DOWNTO, \text{'$]$'}, THEN, DO\}$}\\
                     \hline
-                    exprList $\rightarrow$ expr \{ ',' expr \} & \makecell[l]{$\Follow{expr} \cup = \First{\text{','}} \setminus \epsset $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}\}$\\ $\Follow{expr} \cup = \Follow{exprList} $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}\}$}\\
+                    exprList $\rightarrow$ expr \{ ',' expr \} & \makecell[l]{$\Follow{expr} \cup = \First{\text{','}} \setminus \epsset $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}\}$\\ $\Follow{expr} \cup = \Follow{exprList} $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}, \text{'$)$'}\}$}\\
                     \hline
                     simpleExpr $\rightarrow$ term \{ addOp term \} & \makecell[l]{$\Follow{term} \cup = \First{addOp} \setminus \epsset = \{\text{'$+$'}, \text{'$-$'}, OR\}$\\ $\Follow{term} \cup = \Follow{simpleExpr} $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}, TO, DOWNTO, \text{'$]$'}, THEN, DO, \text{'$+$'}, \text{'$-$'}, OR\}$}\\
                     \hline
@@ -342,7 +342,7 @@
                     \hline
                     factor $\rightarrow$ TRUE &\\
                     \hline
-                    factor $\rightarrow$ IDENT [ '[' expr ']' ] & \makecell[l]{$\Follow{expr} \cup = \First{\text{']'}} \setminus \epsset $\\$= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}\}$} \\
+                    factor $\rightarrow$ IDENT [ '[' expr ']' ] & \makecell[l]{$\Follow{expr} \cup = \First{\text{']'}} \setminus \epsset $\\$= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}, \text{'$)$'}\}$} \\
                     \hline
                     factor $\rightarrow$ NOT factor & $\Follow{factor} \cup = \Follow{factor}$\\
                     \hline
@@ -377,7 +377,110 @@
                     mulOp $\rightarrow$ MOD & \\
                     \hline
                     mulOp $\rightarrow$ AND & \\
+                    \hline
+                \end{tabular}
+                \begin{tabular}{|l|l|}
+                    \hline
+                    \textbf{Grammar Rule} & \textbf{Iteration 2}\\
+                    \hline
+                    start $\rightarrow$ PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & \makecell[l]{$\Follow{varDecList} \cup = \First{compStmt} \setminus \epsset = \{BEGIN, \text{'.'}\}$\\
+                                                                                     $\Follow{compStmt} = \{\text{'.'}\}$
+                                                                                    }\\
+                    \hline
+                    \makecell[l]{varDecList $\rightarrow$ IDENT [ ',' IDENT ]\\ ':' type ';' \{ IDENT [ ',' IDENT ] ':' type ';' \}} & $\Follow{type} = \{\text{';'}\}$\\
+                    \hline
+                    type $\rightarrow$ [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} \cup = \Follow{type} = \{\text{';'\}}$\\
+                    \hline
+                    simpleType $\rightarrow$ INTEGER &\\
+                    \hline
+                    simpleType $\rightarrow$ REAL &\\
+                    \hline
+                    simpleType $\rightarrow$ BOOLEAN &\\
+                    \hline
+                    compStmt $\rightarrow$ BEGIN stmtList END & $\Follow{stmtList} = \{END\}$\\
+                    \hline
+                    stmtList $\rightarrow$ statement \{ ';' statement \} & \makecell[l]{$\Follow{statement} = \{\text{'$]$'}, \text{'$]$'}, ELSE, END\}$}\\
+                    \hline 
+                    statement $\rightarrow$ assignStmt & $\Follow{assignStmt} \cup = \Follow{statement} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$\\
+                    \hline
+                    statement $\rightarrow$ compStmt & $\Follow{compStmt} \cup = \Follow{statement} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$\\
+                    \hline
+                    statement $\rightarrow$ ifStmt & $\Follow{ifStmt} \cup = \Follow{statement} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$\\
+                    \hline
+                    statement $\rightarrow$ whileStmt & $\Follow{whileStmt} \cup = \Follow{statement} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$\\
+                    \hline
+                    statement $\rightarrow$ forStmt & $\Follow{forStmt} \cup = \Follow{statement} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$\\
+                    \hline
+                    statement $\rightarrow$ READ '$($' exprList '$)$' & $\Follow{exprList} = \{\text{'$)$'}\}$\\
+                    \hline
+                    statement $\rightarrow$ WRITE '$($' exprList '$)$' & $\Follow{exprList} = \{\text{'$)$'}\}$\\
+                    \hline
+                    assignStmt $\rightarrow$ IDENT [ '$[$' expr '$]$' ] ':=' expr & \makecell[l]{$\Follow{expr} \cup = \Follow{assignStmt} $\\$= \{\text{'$]$'}, TO, DOWNTO, THEN, DO, \text{','}, \text{'$)$'}, \text{';'}, ELSE, END\}$}\\
+                    \hline
+                    ifStmt $\rightarrow$ IF expr THEN statement [ ELSE statement ] & \makecell[l]{$\Follow{statement} \cup = \Follow{ifStmt} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$}\\
+                    \hline
+                    whileStmt $\rightarrow$ WHILE expr DO statement & \makecell[l]{$\Follow{statement} \cup = \Follow{whileStmt} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$}\\
+                    \hline
+                    forStmt $\rightarrow$ FOR IDENT ':=' expr toPart expr DO statement & \makecell[l]{$\Follow{statement} \cup = \Follow{forStmt} = \{\text{'$]$'}, \text{';'}, ELSE, END\}$}\\
+                    \hline
+                    toPart $\rightarrow$ TO & \\
+                    \hline
+                    toPart $\rightarrow$ DOWNTO & \\
+                    \hline
+                    expr $\rightarrow$ simpleExpr [ relOp simpleExpr ] & \makecell[l]{$\Follow{simpleExpr} \cup = \Follow{expr} $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}, TO, DOWNTO, $\\$\text{'$]$'}, THEN, DO, \text{','}, \text{'$)$'}, \text{';'}, ELSE, END\}$}\\
+                    \hline
+                    exprList $\rightarrow$ expr \{ ',' expr \} & \makecell[l]{$\Follow{expr} \cup = \Follow{exprList} $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}, \text{'$)$'}\}$}\\
+                    \hline
+                    simpleExpr $\rightarrow$ term \{ addOp term \} & \makecell[l]{$\Follow{term} \cup = \Follow{simpleExpr} $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}, TO, DOWNTO, \text{'$]$'}, $\\$THEN, DO, \text{'$+$'}, \text{'$-$'}, OR, \text{','}, \text{'$)$', \text{';'}}\}$}\\
+                    \hline
+                    term $\rightarrow$ factor { mulOp factor } & \makecell[l]{$\Follow{factor} \cup = \Follow{term} $\\ $= \{\text{'$<$'}, \text{'$<=$'}, \text{'$>$'}, \text{'$>=$'}, \text{'$=$'}, \text{'$<>$'}, TO, DOWNTO,$\\$ \text{'$]$'}, THEN, DO, \text{'$+$'}, \text{'$-$'}, OR, \text{'$*$'}, \text{'$/$'}, DIV, MOD, AND, \text{','}, \text{')'}, \text{';'}\}$}\\
+                    \hline
+                    factor $\rightarrow$ NUM &\\
+                    \hline
+                    factor $\rightarrow$ STRING &\\
+                    \hline
+                    factor $\rightarrow$ FALSE &\\
+                    \hline
+                    factor $\rightarrow$ TRUE &\\
+                    \hline
+                    factor $\rightarrow$ IDENT [ '[' expr ']' ] & \makecell[l]{$\Follow{expr} \cup = \Follow{exprList} $\\ $= \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}, \text{'$)$'}\}$} \\
+                    \hline
+                    factor $\rightarrow$ NOT factor & $\Follow{factor} \cup = \Follow{factor}$\\
+                    \hline
+                    factor $\rightarrow$ '-' factor & $\Follow{factor} \cup = \Follow{factor}$\\
+                    \hline
+                    factor $\rightarrow$ '(' expr ')' & \makecell[l]{$\Follow{expr} = \{TO, DOWNTO, \text{']'}, THEN, DO, \text{','}, \text{'$)$'}\}$}\\
+                    \hline
+                    relOp $\rightarrow$ '$<$' & \\
+                    \hline
+                    relOp $\rightarrow$ '$<=$' & \\
+                    \hline
+                    relOp $\rightarrow$ '$>$' & \\
+                    \hline
+                    relOp $\rightarrow$ '$>=$' & \\
+                    \hline
+                    relOp $\rightarrow$ '$=$' & \\
+                    \hline
+                    relOp $\rightarrow$ '$<>$' & \\
+                    \hline
+                    addOp $\rightarrow$ '$+$' & \\
+                    \hline
+                    addOp $\rightarrow$ '$-$' & \\
+                    \hline
+                    addOp $\rightarrow$ OR & \\
+                    \hline
+                    mulOp $\rightarrow$ '$*$' & \\
+                    \hline
+                    mulOp $\rightarrow$ '$/$' & \\
+                    \hline
+                    mulOp $\rightarrow$ DIV & \\
+                    \hline
+                    mulOp $\rightarrow$ MOD & \\
+                    \hline
+                    mulOp $\rightarrow$ AND & \\
+                    \hline
                 \end{tabular}
         \end{itemize}
+        I think in the next iteration there are no more changes.
 \end{document}
 
