@@ -17,12 +17,15 @@
 #include "rules.h"
 #include "tokens.h"
 
-#define RULE_PREFIX(); \
+#define RULE_PREFIX(fun); \
     if (panic_mode) { \
         return; \
-    }
+    } \
+    stack_push(call_stack, fun); \
+    top:
 
 #define RULE_SUFFIX(); \
+    ret: \
     if (panic_mode) { \
         if (panic_recovery() == 1) { \
             goto top; \
@@ -118,11 +121,8 @@ unsigned int panic_recovery(void) {
 }
 
 void start(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(start);
 
-    stack_push(call_stack, start);
-
-top:
     expect(PROGRAM);
     expect(IDENT);
     expect(SEMCO);
@@ -136,11 +136,8 @@ top:
 }
 
 void varDecList(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(varDecList);
 
-    stack_push(call_stack, varDecList);
-
-top:
     expect(IDENT);
     do {
         while (accept(COMMA)) {
@@ -155,11 +152,8 @@ top:
 }
 
 void type(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(type);
 
-    stack_push(call_stack, type);
-
-top:
     if (accept(ARRAY)) {
         expect(BRA_L);
         expect(NUM);
@@ -177,16 +171,12 @@ top:
     /* must not be empty */
     panic_mode = true;
 
-ret:
     RULE_SUFFIX();
 }
 
 void compStmt(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(compStmt);
 
-    stack_push(call_stack, compStmt);
-
-top:
     expect(_BEGIN);
     stmtList();
     expect(END);
@@ -195,11 +185,8 @@ top:
 }
 
 void stmtList(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(stmtList);
 
-    stack_push(call_stack, stmtList);
-
-top:
     statement();
     while (accept(SEMCO)) {
         statement();
@@ -209,11 +196,8 @@ top:
 }
 
 void statement(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(statement);
 
-    stack_push(call_stack, statement);
-
-top:
     /* assignStmt */
     if (accept(IDENT)) {
         if (accept(BRA_L)) {
@@ -290,16 +274,12 @@ top:
     /* must not be empty */
     panic_mode = true;
 
-ret:
     RULE_SUFFIX();
 }
 
 void toPart(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(toPart);
 
-    stack_push(call_stack, toPart);
-
-top:
     if (accept_any(2, TO, DOWNTO)) {
         goto ret;
     }
@@ -307,16 +287,12 @@ top:
     /* must not be empty */
     panic_mode = true;
 
-ret:
     RULE_SUFFIX();
 }
 
 void expr(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(expr);
 
-    stack_push(call_stack, expr);
-
-top:
     simpleExpr();
     /* relOp */
     if (accept_any(6, LT, LEQ, GT, GEQ, EQ, NEQ)) {
@@ -327,11 +303,8 @@ top:
 }
 
 void simpleExpr(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(simpleExpr);
 
-    stack_push(call_stack, simpleExpr);
-
-top:
     term();
     /* addOp */
     while (accept_any(3, PLUS, MINUS, OR)) {
@@ -342,11 +315,8 @@ top:
 }
 
 void term(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(term);
 
-    stack_push(call_stack, term);
-
-top:
     factor();
     /* mulOp */
     while (accept_any(5, ASTR, SLASH, DIV, MOD, AND)) {
@@ -357,11 +327,8 @@ top:
 }
 
 void factor(void) {
-    RULE_PREFIX();
+    RULE_PREFIX(factor);
 
-    stack_push(call_stack, factor);
-
-top:
     if (accept(IDENT)) {
         /* subscript */
         if (accept(BRA_L)) {
@@ -389,7 +356,6 @@ top:
     /* must not be empty */
     panic_mode = true;
 
-ret:
     RULE_SUFFIX();
 }
 
