@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[left=1cm,top=1cm,right=2cm,nohead,nofoot]{geometry}
+\usepackage{makecell}
 
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
@@ -281,7 +282,14 @@
                 \hline
                 \textbf{Grammar Rule} & \textbf{Iteration 1}\\
                 \hline
-                PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & TODO\\
+                PROGRAM IDENT ';' [ VAR varDecList ] compStmt '.' & \makecell[l]{$\Follow{varDecList} := \First{compStmt} \setminus \epsset = \{BEGIN\}$\\
+                                                                                 $\Follow{compStmt} := \{\text{'.'}\}$
+                                                                                }\\
+                \hline
+                IDENT [ ',' IDENT ] ':' type ';' { IDENT [ ',' IDENT ] ':' type ';' } & $\Follow{type} := \{\text{';'}\}$\\
+                \hline
+                [ ARRAY '$[$' NUM '..' NUM '$]$' OF ] simpleType & $\Follow{simpleType} := \Follow{type}$\\
+                \hline
                 \end{tabular}
         \end{itemize}
 \end{document}
