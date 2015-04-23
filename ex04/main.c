@@ -26,27 +26,22 @@
 
 #define RULE_SUFFIX(); \
     ret: \
-    if (panic_mode) { \
-        if (panic_recovery() == 1) { \
+    if (panic_mode && panic_recovery() == 1) { \
             goto top; \
-        } else { \
-            stack_pop(call_stack); \
-            return; \
-        } \
     } \
     stack_pop(call_stack);
 
 /* holds the current token received from the lexer */
 static struct token current;
 
-/* holds call path of non-terminal */
+/* holds the call path */
 static struct stack *call_stack;
 
 /* shows whether panic mode is on */
 static bool panic_mode = false;
 
 /* compares type with current token type, advances and returns true on match */
-bool accept(const enum token_type type, ...) {
+bool accept(const enum token_type type) {
     if (panic_mode || current.type != type) {
         return false;
     }
@@ -70,10 +65,7 @@ bool accept_any(unsigned int num, ...) {
 
 /* compares type with current token, advances on match else call exit */
 void expect(const enum token_type type) {
-    if (panic_mode) {
-        return;
-    }
-    if (!accept(type)) {
+    if (!panic_mode && !accept(type)) {
         fprintf(stderr, "Error: Line %d: read '%s', expected '%s'\n",
                 current.line, token_type_string(current.type),
                 token_type_string(type));
@@ -83,12 +75,15 @@ void expect(const enum token_type type) {
     }
 }
 
-/* scans a head until token in FIRST or FOLLOW is found returns 1 if token in
+/* scans ahead until token in FIRST or FOLLOW is found returns 1 if token in
  * FIRST, 2 if token in FOLLOW or exists if EOF is reached
  */
 unsigned int panic_recovery(void) {
+    /* get FIRST set for current non-terminal */
     const struct rule_token_pair *first = recovery_lookup_first(
             (void (*)(void)) stack_peek(call_stack));
+
+    /* get FOLLOW set for current non-terminal */
     const struct rule_token_pair *follow = recovery_lookup_follow(
             (void (*)(void)) stack_peek(call_stack));
 
@@ -102,6 +97,7 @@ unsigned int panic_recovery(void) {
                 return 1;
             }
         }
+
         for (unsigned int i = 0; i < follow->num; i++) {
             if (follow->types[i] == current.type) {
                 panic_mode = false;
@@ -111,12 +107,11 @@ unsigned int panic_recovery(void) {
                 return 2;
             }
         }
+
         current = lexer_next();
     }
 
     fprintf(stderr, "Recover: EOF reached, could not recover\n");
-    stack_destroy(call_stack);
-    lexer_destroy();
     exit(EXIT_FAILURE);
 }
 
@@ -359,19 +354,25 @@ void factor(void) {
     RULE_SUFFIX();
 }
 
+/* called on exit, does some cleanup jobs */
+void exit_hook(void) {
+    stack_destroy(call_stack);
+    lexer_destroy();
+}
+
 int main(int argc, char *argv[]) {
     current = lexer_create();
-
     call_stack = stack_create();
+
+    if (atexit(exit_hook) != 0) {
+        fprintf(stderr, "Error: could not register exit hook\n");
+        exit(EXIT_FAILURE);
+    }
 
     start();
     expect(_EOF);
 
-    puts("input looks ok");
-
-    stack_destroy(call_stack);
-
-    lexer_destroy();
+    puts("parser finished");
 
     return EXIT_SUCCESS;
 }
