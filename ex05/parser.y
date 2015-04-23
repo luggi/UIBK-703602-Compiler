@@ -108,7 +108,7 @@ factor                  : NUM
                         | IDENT BRA_L expr BRA_R
                         | NOT factor
                         | MINUS factor
-                        | PAR_R expr PAR_L
+                        | PAR_L expr PAR_R
                         ;
 
 relOp                   : LT
