@@ -41,30 +41,30 @@ static struct rule_token_pair FIRST[] = {
 };
 
 /* FOLLOW */
-static enum token_type start_follow[]      = {/* TODO */};
-static enum token_type varDecList_follow[] = {/* TODO */};
-static enum token_type type_follow[]       = {/* TODO */};
-static enum token_type compStmt_follow[]   = {/* TODO */};
-static enum token_type stmtList_follow[]   = {/* TODO */};
-static enum token_type statement_follow[]  = {/* TODO */};
-static enum token_type toPart_follow[]     = {/* TODO */};
-static enum token_type expr_follow[]       = {/* TODO */};
-static enum token_type simpleExpr_follow[] = {/* TODO */};
-static enum token_type term_follow[]       = {/* TODO */};
-static enum token_type factor_follow[]     = {/* TODO */};
+static enum token_type start_follow[]      = {_EOF};
+static enum token_type varDecList_follow[] = {_BEGIN};
+static enum token_type type_follow[]       = {SEMCO};
+static enum token_type compStmt_follow[]   = {SEMCO, END, ELSE};
+static enum token_type stmtList_follow[]   = {END};
+static enum token_type statement_follow[]  = {SEMCO, END, ELSE};
+static enum token_type toPart_follow[]     = {IDENT, NUM, STRING, FALSE, TRUE, NOT, MINUS, PAR_L};
+static enum token_type expr_follow[]       = {COMMA, PAR_R, BRA_R, TO, DO, DOWNTO, THEN, ELSE};
+static enum token_type simpleExpr_follow[] = {PLUS, MINUS, OR, LT, LEQ, GT, GEQ, EQ, NEQ, COMMA};
+static enum token_type term_follow[]       = {PLUS, MINUS, OR, ASTR, SLASH, DIV, MOD, AND, COMMA};
+static enum token_type factor_follow[]     = {PLUS, MINUS, OR, ASTR, SLASH, DIV, MOD, AND, LT, LEQ, GT, GEQ, EQ, NEQ, COMMA};
 
 static struct rule_token_pair FOLLOW[] = {
-    {start,        0,   start_follow},
-    {varDecList,   0,   varDecList_follow},
-    {type,         0,   type_follow},
-    {compStmt,     0,   compStmt_follow},
-    {stmtList,     0,   stmtList_follow},
-    {statement,    0,   statement_follow},
-    {toPart,       0,   toPart_follow},
-    {expr,         0,   expr_follow},
-    {simpleExpr,   0,   simpleExpr_follow},
-    {term,         0,   term_follow},
-    {factor,       0,   factor_follow},
+    {start,        1,   start_follow},
+    {varDecList,   1,   varDecList_follow},
+    {type,         1,   type_follow},
+    {compStmt,     3,   compStmt_follow},
+    {stmtList,     1,   stmtList_follow},
+    {statement,    3,   statement_follow},
+    {toPart,       8,   toPart_follow},
+    {expr,         8,   expr_follow},
+    {simpleExpr,   10,   simpleExpr_follow},
+    {term,         9,   term_follow},
+    {factor,       15,   factor_follow},
 };
 
 const struct rule_token_pair *recovery_lookup_first(void (*key)(void)) {
