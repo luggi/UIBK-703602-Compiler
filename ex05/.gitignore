@@ -1,0 +1,6 @@
+*.o
+
+main
+lexer.c
+parser.h
+parser.c
