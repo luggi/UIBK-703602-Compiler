@@ -9,7 +9,7 @@
 %{
 #include <stdio.h>
 
-extern int yylex();
+extern int yylex(void);
 extern int yylineno;
 extern char *yytext;
 
