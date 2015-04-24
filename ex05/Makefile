@@ -8,12 +8,12 @@ YACC = bison
 
 all: main
 
-main: main.o lexer.o parser.h parser.o
-
-main.o: parser.h
-
 clean:
 	$(RM) *.o main lexer.c parser.h parser.c
+
+main: lexer.o parser.o
+
+main.o: parser.h
 
 %.c %.h: %.y
 	$(YACC) $(YFLASG) $< -o $(@:.h=.c)
