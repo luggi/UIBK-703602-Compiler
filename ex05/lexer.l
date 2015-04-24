@@ -7,14 +7,9 @@
  */
 
 %{
-#include "lexer.h"
-
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "parser.h"
 
+extern void yyerror(const char *message);
 %}
 
 %option noyywrap
@@ -114,4 +109,3 @@ true                    return TRUE;
 .                       yyerror("unknown symbol");
 
 %%
-

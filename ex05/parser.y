@@ -8,18 +8,46 @@
 
 %{
 #include <stdio.h>
+
+extern int yylex();
 extern int yylineno;
 extern char *yytext;
+
+void yyerror(const char *message);
 %}
 
 %error-verbose
 
 %token _EOF 0 "end of file"
+%token _BEGIN "BEGIN"
+%token AND ARRAY DIV DO DOWNTO ELSE END FOR IF MOD NOT OF OR PROGRAM READ THEN
+%token TO VAR WHILE WRITE BOOLEAN INTEGER REAL FALSE TRUE NUM STRING IDENT
+%token ASTR "*"
+%token PLUS "+"
+%token COMMA ","
+%token MINUS "-"
+%token DOT "."
+%token DDOT ".."
+%token SLASH "/"
+%token COLON ":"
+%token ASGN ":="
+%token SEMCO ";"
+%token LT "<"
+%token LEQ "<="
+%token NEQ "<>"
+%token EQ "="
+%token GT ">"
+%token GEQ ">="
+%token CARET "^"
+%token PAR_L "("
+%token PAR_R ")"
+%token BRA_L "["
+%token BRA_R "]"
 
-%token AND ARRAY _BEGIN DIV DO DOWNTO ELSE END FOR IF MOD NOT OF OR PROGRAM READ THEN TO VAR WHILE WRITE ASTR PLUS COMMA MINUS DOT DDOT SLASH COLON ASGN SEMCO LT LEQ NEQ EQ GT GEQ CARET PAR_L PAR_R BRA_L BRA_R BOOLEAN INTEGER REAL FALSE TRUE NUM STRING IDENT
 %start start
 
 %%
+
 start                   : PROGRAM IDENT SEMCO varDec compStmt DOT
                         ;
 
@@ -130,15 +158,10 @@ mulOp                   : ASTR
                         | MOD
                         | AND
                         ;
+
 %%
 
-int main(int argc, char *argv[])
-{
-    return yyparse();
+void yyerror(const char *message) {
+    fprintf(stderr, "Error: Line %d: %s got \"%s\"\n", yylineno, message,
+            yytext);
 }
-
-int yyerror(const char *message) {
-    fprintf(stderr, "Error: Line %d: %s got \"%s\"\n", yylineno, message, yytext);
-    return 0;
-}
-
