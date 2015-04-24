@@ -1,6 +1,6 @@
 override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable \
                     -std=gnu99
-override YFLASG  += -d -k
+override YFLAGS  += -d -k
 
 YACC = bison
 
@@ -16,4 +16,4 @@ main: lexer.o parser.o
 main.o: parser.h
 
 %.c %.h: %.y
-	$(YACC) $(YFLASG) $< -o $(@:.h=.c)
+	$(YACC) $(YFLAGS) $< -o $(@:.h=.c)
