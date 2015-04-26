@@ -20,8 +20,8 @@ void yyerror(const char *message);
 
 %token _EOF 0 "end of file"
 %token _BEGIN "BEGIN"
-%token AND ARRAY DIV DO DOWNTO ELSE END FOR IF MOD NOT OF OR PROGRAM READ THEN
-%token TO VAR WHILE WRITE BOOLEAN INTEGER REAL FALSE TRUE NUM STRING IDENT
+%token AND ARRAY DIV DO DOWNTO END FOR IF MOD NOT OF OR PROGRAM READ TO VAR
+%token WHILE WRITE BOOLEAN INTEGER REAL FALSE TRUE NUM STRING IDENT
 %token ASTR "*"
 %token PLUS "+"
 %token COMMA ","
@@ -43,6 +43,9 @@ void yyerror(const char *message);
 %token PAR_R ")"
 %token BRA_L "["
 %token BRA_R "]"
+
+/* dangling else */
+%right THEN ELSE
 
 %start start
 
@@ -95,11 +98,8 @@ assignStmt              : IDENT ASGN expr
                         | IDENT BRA_L expr BRA_R ASGN expr
                         ;
 
-ifStmt                  : IF expr THEN statement elsePart
-                        ;
-
-elsePart                : ELSE statement
-                        |
+ifStmt                  : IF expr THEN statement
+                        | IF expr THEN statement ELSE statement
                         ;
 
 whileStmt               : WHILE expr DO statement
