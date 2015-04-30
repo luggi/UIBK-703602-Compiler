@@ -9,7 +9,6 @@
 #include "parser.h"
 
 extern void yylex_destroy(void);
-extern int yyparse();
 
 int main(int argc, char *argv[]) {
     int ret = yyparse();

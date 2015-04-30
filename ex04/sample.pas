@@ -13,7 +13,7 @@ program minipas;
     read(x, y);
     while x * y <> 0 do
     begin
-      if x > y 
+      if x > y then
         x := x - y
       else y := y - x
     end;
@@ -26,7 +26,7 @@ program minipas;
     read(x);
     y := 1;
     i := 2;
-    for i := 2  n do
+    for i := 2 to n do
     begin
       y := y * i
     end;
