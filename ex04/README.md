@@ -1,4 +1,4 @@
-#Homework 4 (10 points)
+# Homework 4 (10 Points)
 
 Extend your recursive descendent parser with error detection and recovery
 functionality as follows:
@@ -9,6 +9,6 @@ functionality as follows:
    FIRST set of the expected nonterminal.
 3. In case of syntactic errors, implement a panic-mode error recovery that
    scans ahead until:
-   1. it reaches a token in the First set of the current nonterminal or
-   2. it reaches a token in the Follow set of the current nonterminal, and then
-      continues parsing.
+    1. it reaches a token in the First set of the current nonterminal or
+    2. it reaches a token in the Follow set of the current nonterminal, and
+       then continues parsing.
