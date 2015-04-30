@@ -9,6 +9,8 @@
 %{
 #include <stdio.h>
 
+#include "ast.h"
+
 extern int yylex(void);
 extern int yylineno;
 extern char *yytext;
