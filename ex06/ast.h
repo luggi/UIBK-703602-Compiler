@@ -34,54 +34,64 @@
  */
 enum ast_node_type {
 
-    NODE_PROGRAM,
-        /* identifier
-         * identListType (optional)
-         * stmtList
-         */
+    /* program */
+        NODE_PROGRAM,
+            /* identifier
+             * identListType (optional)
+             * stmtList
+             */
 
-    NODE_IDENTIFIER,            /* store text in ident */
+    /* identifier */
+        NODE_IDENTIFIER,       /* store text in ident */
 
-    NODE_IDENTLISTTYPE,
-        /* identList
-         * type
-         */
+    /* identListType */
+        NODE_IDENTLISTTYPE,
+            /* identList
+             * type
+             */
 
-    NODE_IDENTLIST,
-        /* identifier
-         */
+    /* identList */
+        NODE_IDENTLIST,
+            /* identifier
+             */
 
-    NODE_TYPE,
-        /* num (optional)
-         * num (optional)
-         * simpleType
-         */
+    /* type */
+        NODE_TYPE,
+            /* num (optional)
+             * num (optional)
+             * simpleType
+             */
 
-    NODE_STMTLIST,
-        /* statement
-         */
+    /* stmtList */
+        NODE_STMTLIST,
+            /* statement
+             */
 
-    NODE_EXPRLIST,
-        /* expr
-         */
+    /* exprList */
+        NODE_EXPRLIST,
+            /* expr
+             */
 
-    NODE_EXPR,
-        /* simpleExpr
-         * relOp (optional)
-         * simpleExpr (optional)
-         */
+    /* expr */
+        NODE_EXPR,
+            /* simpleExpr
+             * relOp (optional)
+             * simpleExpr (optional)
+             */
 
-    NODE_SIMPLEEXPR,
-        /* term
-         * addOp (optional)
-         * simpleExpr (optional)
-         */
+    /* simpleExpr */
+        NODE_SIMPLEEXPR,
+            /* term
+             * addOp (optional)
+             * simpleExpr (optional)
+             */
 
-    NODE_TERM,
-        /* factor
-         * mulOp (optional)
-         * simpleExpr (optional)
-         */
+    /* term */
+        NODE_TERM,
+            /* factor
+             * mulOp (optional)
+             * simpleExpr (optional)
+             */
 
     /* statement */
         STMT_ASSIGN,
