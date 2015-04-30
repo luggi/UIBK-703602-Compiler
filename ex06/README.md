@@ -8,7 +8,7 @@
 
 ## Abstract Syntax Tree (AST)
 
-<table>
+<table width="100%">
     <tr>
         <th>Super Type<br></th>
         <th>Node Type</th>
