@@ -11,22 +11,22 @@
 
 #include <stdbool.h>
 
-#define MAX_AST_BODY_SIZE 5
+#define AST_NODE_BODY_MAX_SIZE 5
 
 /* This enum defines all possible types for a node.
  *
  * Comments directly *below* a node type indicate the content of the node's
  * body. This list may contain optional parts, but MUST NOT contain more
- * entries than MAX_AST_BODY_SIZE (including all optional entries).
+ * entries than AST_NODE_BODY_MAX_SIZE (including all optional entries).
  *
  * Comments directly to the *right* of a node type indicate the content of the
  * node's value.
  *
- * A Comment above a group of node types names the "super type" of these types.
- * This should be used as follows:
+ * A Comment above a group of node types states the "super type" of these
+ * types. This should be used as follows:
  *
  *      A node of type `NODE_STMTLIST` contains a node of type `statement` in
- *      it's body. Since `statement` is here used as a "super type", the
+ *      its body. Since `statement` is here used as a "super type", the
  *      underlying node can be of type STMT_ASSIGN, STMT_IF, STMT_WHILE,
  *      STMT_FOR, STMT_READ or STMT_WRITE. Note that the prefix of a node type
  *      *can* indicate this relation.
@@ -181,7 +181,7 @@ struct ast_node {
     union {
 
         /* body is a list of pointers to underlying nodes */
-        struct ast_node *body[MAX_AST_BODY_SIZE];
+        struct ast_node *body[AST_NODE_BODY_MAX_SIZE];
 
         /* ident is used to store text of identifier */
         char *ident;
