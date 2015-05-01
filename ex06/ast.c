@@ -67,6 +67,166 @@ void node_destroy(struct ast_node *node) {
     free(node);
 }
 
+/* print functions */
+static void print_NODE_PROGRAM(struct ast_node *node);
+static void print_NODE_VARDECLIST(struct ast_node *node);
+static void print_NODE_IDENTLISTTYPE(struct ast_node *node);
+static void print_NODE_IDENTLIST(struct ast_node *node);
+static void print_NODE_TYPE(struct ast_node *node);
+static void print_NODE_SIMPLETYPE(struct ast_node *node);
+static void print_NODE_STMTLIST(struct ast_node *node);
+static void print_STMT_ASSIGN(struct ast_node *node);
+static void print_STMT_IF(struct ast_node *node);
+static void print_STMT_WHILE(struct ast_node *node);
+static void print_STMT_FOR(struct ast_node *node);
+static void print_STMT_READ(struct ast_node *node);
+static void print_STMT_WRITE(struct ast_node *node);
+static void print_NODE_TOPART(struct ast_node *node);
+static void print_NODE_EXPRLIST(struct ast_node *node);
+static void print_NODE_EXPR(struct ast_node *node);
+static void print_NODE_SIMPLEEXPR(struct ast_node *node);
+static void print_NODE_TERM(struct ast_node *node);
+static void print_NODE_IDENT_SUBSCR(struct ast_node *node);
+static void print_NODE_BOOL(struct ast_node *node);
+static void print_FACTOR_NOT(struct ast_node *node);
+static void print_FACTOR_MINUS(struct ast_node *node);
+static void print_FACTOR_EXPR(struct ast_node *node);
+static void print_NODE_IDENT(struct ast_node *node);
+static void print_NODE_NUM(struct ast_node *node);
+static void print_NODE_STR(struct ast_node *node);
+static void print_NODE_RELOP(struct ast_node *node);
+static void print_NODE_ADDOP(struct ast_node *node);
+static void print_NODE_MULOP(struct ast_node *node);
+
+void print_as_prascal(struct ast_node *node) {
+    if (node == NULL) {
+        fprintf(stderr, "\n\nnode is NULL\n");
+        exit(EXIT_FAILURE);
+    }
+
+    switch (node->type) {
+        case NODE_PROGRAM:
+            print_NODE_PROGRAM(node);
+            break;
+
+        case NODE_VARDECLIST:
+            print_NODE_VARDECLIST(node);
+            break;
+
+        case NODE_IDENTLISTTYPE:
+            print_NODE_IDENTLISTTYPE(node);
+            break;
+
+        case NODE_IDENTLIST:
+            print_NODE_IDENTLIST(node);
+            break;
+
+        case NODE_TYPE:
+            print_NODE_TYPE(node);
+            break;
+
+        case NODE_SIMPLETYPE:
+            print_NODE_SIMPLETYPE(node);
+            break;
+
+        case NODE_STMTLIST:
+            print_NODE_STMTLIST(node);
+            break;
+
+        case STMT_ASSIGN:
+            print_STMT_ASSIGN(node);
+            break;
+
+        case STMT_IF:
+            print_STMT_IF(node);
+            break;
+
+        case STMT_WHILE:
+            print_STMT_WHILE(node);
+            break;
+
+        case STMT_FOR:
+            print_STMT_FOR(node);
+            break;
+
+        case STMT_READ:
+            print_STMT_READ(node);
+            break;
+
+        case STMT_WRITE:
+            print_STMT_WRITE(node);
+            break;
+
+        case NODE_TOPART:
+            print_NODE_TOPART(node);
+            break;
+
+        case NODE_EXPR:
+            print_NODE_EXPR(node);
+            break;
+
+        case NODE_EXPRLIST:
+            print_NODE_EXPRLIST(node);
+            break;
+
+        case NODE_SIMPLEEXPR:
+            print_NODE_SIMPLEEXPR(node);
+            break;
+
+        case NODE_TERM:
+            print_NODE_TERM(node);
+            break;
+
+        case NODE_IDENT:
+            print_NODE_IDENT(node);
+            break;
+
+        case NODE_NUM:
+            print_NODE_NUM(node);
+            break;
+
+        case NODE_STR:
+            print_NODE_STR(node);
+            break;
+
+        case NODE_BOOL:
+            print_NODE_BOOL(node);
+            break;
+
+        case NODE_RELOP:
+            print_NODE_RELOP(node);
+            break;
+
+        case NODE_ADDOP:
+            print_NODE_ADDOP(node);
+            break;
+
+        case NODE_MULOP:
+            print_NODE_MULOP(node);
+            break;
+
+        case NODE_IDENT_SUBSCR:
+            print_NODE_IDENT_SUBSCR(node);
+            break;
+
+        case FACTOR_NOT:
+            print_FACTOR_NOT(node);
+            break;
+
+        case FACTOR_MINUS:
+            print_FACTOR_MINUS(node);
+            break;
+
+        case FACTOR_EXPR:
+            print_FACTOR_EXPR(node);
+            break;
+
+        default:
+            fprintf(stderr, "\n\nunknown type\n");
+            exit(EXIT_FAILURE);
+    }
+}
+
 static void print_NODE_PROGRAM(struct ast_node *node) {
     printf(" PROGRAM ");
     print_as_prascal(node->body[0]);
@@ -372,133 +532,3 @@ static void print_NODE_MULOP(struct ast_node *node) {
             exit(EXIT_FAILURE);
     }
 }
-
-void print_as_prascal(struct ast_node *node) {
-    if (node == NULL) {
-        fprintf(stderr, "\n\nnode is NULL\n");
-        exit(EXIT_FAILURE);
-    }
-
-    switch (node->type) {
-        case NODE_PROGRAM:
-            print_NODE_PROGRAM(node);
-            break;
-
-        case NODE_VARDECLIST:
-            print_NODE_VARDECLIST(node);
-            break;
-
-        case NODE_IDENTLISTTYPE:
-            print_NODE_IDENTLISTTYPE(node);
-            break;
-
-        case NODE_IDENTLIST:
-            print_NODE_IDENTLIST(node);
-            break;
-
-        case NODE_TYPE:
-            print_NODE_TYPE(node);
-            break;
-
-        case NODE_SIMPLETYPE:
-            print_NODE_SIMPLETYPE(node);
-            break;
-
-        case NODE_STMTLIST:
-            print_NODE_STMTLIST(node);
-            break;
-
-        case STMT_ASSIGN:
-            print_STMT_ASSIGN(node);
-            break;
-
-        case STMT_IF:
-            print_STMT_IF(node);
-            break;
-
-        case STMT_WHILE:
-            print_STMT_WHILE(node);
-            break;
-
-        case STMT_FOR:
-            print_STMT_FOR(node);
-            break;
-
-        case STMT_READ:
-            print_STMT_READ(node);
-            break;
-
-        case STMT_WRITE:
-            print_STMT_WRITE(node);
-            break;
-
-        case NODE_TOPART:
-            print_NODE_TOPART(node);
-            break;
-
-        case NODE_EXPR:
-            print_NODE_EXPR(node);
-            break;
-
-        case NODE_EXPRLIST:
-            print_NODE_EXPRLIST(node);
-            break;
-
-        case NODE_SIMPLEEXPR:
-            print_NODE_SIMPLEEXPR(node);
-            break;
-
-        case NODE_TERM:
-            print_NODE_TERM(node);
-            break;
-
-        case NODE_IDENT:
-            print_NODE_IDENT(node);
-            break;
-
-        case NODE_NUM:
-            print_NODE_NUM(node);
-            break;
-
-        case NODE_STR:
-            print_NODE_STR(node);
-            break;
-
-        case NODE_BOOL:
-            print_NODE_BOOL(node);
-            break;
-
-        case NODE_RELOP:
-            print_NODE_RELOP(node);
-            break;
-
-        case NODE_ADDOP:
-            print_NODE_ADDOP(node);
-            break;
-
-        case NODE_MULOP:
-            print_NODE_MULOP(node);
-            break;
-
-        case NODE_IDENT_SUBSCR:
-            print_NODE_IDENT_SUBSCR(node);
-            break;
-
-        case FACTOR_NOT:
-            print_FACTOR_NOT(node);
-            break;
-
-        case FACTOR_MINUS:
-            print_FACTOR_MINUS(node);
-            break;
-
-        case FACTOR_EXPR:
-            print_FACTOR_EXPR(node);
-            break;
-
-        default:
-            fprintf(stderr, "\n\nunknown type\n");
-            exit(EXIT_FAILURE);
-    }
-}
-
