@@ -63,7 +63,6 @@ identifier              [a-zA-Z_][a-zA-Z0-9_]*
 "="                     return EQ;
 ">"                     return GT;
 ">="                    return GEQ;
-"^"                     return CARET;
 
  /* parentheses */
 "("                     return PAR_L;
@@ -80,7 +79,7 @@ real                    return REAL;
 false                   return FALSE;
 true                    return TRUE;
 {number}                return NUM;
-{string}                return STRING;
+{string}                return STR;
 
  /* identifier */
 {identifier}            return IDENT;

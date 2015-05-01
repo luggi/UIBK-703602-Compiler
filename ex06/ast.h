@@ -38,9 +38,14 @@ enum ast_node_type {
 
     /* program */
         NODE_PROGRAM,
-            /* identifier
-             * identListType (optional)
-             * stmtList
+            /* ident
+             * varDecList (optional)
+             * compStmt
+             */
+
+    /* varDecList */
+        NODE_VARDECLIST,
+            /* identListType
              */
 
     /* identListType */
@@ -51,7 +56,7 @@ enum ast_node_type {
 
     /* identList */
         NODE_IDENTLIST,
-            /* identifier
+            /* ident
              */
 
     /* type */
@@ -61,21 +66,61 @@ enum ast_node_type {
              * simpleType
              */
 
-    /* stmtList */
+    /* simpleType */
+        NODE_SIMPLETYPE,        /* store type in token */
+
+    /* compStmt / stmtList */
         NODE_STMTLIST,
             /* statement
              */
 
-    /* exprList */
-        NODE_EXPRLIST,
-            /* expr
+    /* statement */
+        STMT_ASSIGN,
+            /* ident
+             * expr (optional)
+             * expr
              */
+
+        STMT_IF,
+            /* expr
+             * statement
+             * statement (optional)
+             */
+
+        STMT_WHILE,
+            /* expr
+             * statement
+             */
+
+        STMT_FOR,
+            /* identifier
+             * expr
+             * toPart
+             * expr
+             * statement
+             */
+
+        STMT_READ,
+            /* exprList
+             */
+
+        STMT_WRITE,
+            /* exprList
+             */
+
+    /* toPart */
+        NODE_TOPART,            /* store toPart in token */
 
     /* expr */
         NODE_EXPR,
             /* simpleExpr
              * relOp (optional)
              * simpleExpr (optional)
+             */
+
+    /* exprList */
+        NODE_EXPRLIST,
+            /* expr
              */
 
     /* simpleExpr */
@@ -93,13 +138,16 @@ enum ast_node_type {
              */
 
     /* identifier */
-        NODE_IDENTIFIER,        /* store text in ident */
+        NODE_IDENT,             /* store text in ident */
 
-    /* simpleType */
-        NODE_SIMPLETYPE,        /* store type in token */
+    /* number */
+        NODE_NUM,               /* store value in iValue */
 
-    /* toPart */
-        NODE_TOPART,            /* store operator in token */
+    /* string */
+        NODE_STR,               /* store value in sValue */
+
+    /* boolean */
+        NODE_BOOL,              /* store value in bValue */
 
     /* relOp */
         NODE_RELOP,             /* store operator in token */
@@ -110,50 +158,8 @@ enum ast_node_type {
     /* mulOp */
         NODE_MULOP,             /* store operator in token */
 
-    /* statement */
-        STMT_ASSIGN,
-            /* identifier
-             * expr (optional)
-             * expr
-             */
-
-        STMT_IF,
-            /* expr
-             * stmtList
-             * stmtList (optional)
-             */
-
-        STMT_WHILE,
-            /* expr
-             * stmtList
-             */
-
-        STMT_FOR,
-            /* identifier
-             * expr
-             * toPart
-             * expr
-             * stmtList
-             */
-
-        STMT_READ,
-            /* exprList
-             */
-
-        STMT_WRITE,
-            /* exprList
-             */
-
     /* factor */
-        /* num */
-            FACTOR_INT,         /* store value in iValue */
-            FACTOR_FLOAT,       /* store value in fValue */
-
-        FACTOR_BOOL,            /* store value in bValue */
-
-        FACTOR_STR,             /* store value in sValue */
-
-        FACTOR_IDENT_SUBSCR,
+        NODE_IDENT_SUBSCR,
             /* identifier
              * expr
              */
@@ -201,5 +207,7 @@ struct ast_node {
     };
 
 };
+
+struct ast_node *node_new(enum ast_node_type type);
 
 #endif

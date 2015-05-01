@@ -11,9 +11,11 @@ all: main
 clean:
 	$(RM) *.o main lexer.c parser.h parser.c
 
-main: lexer.o parser.o
+main: lexer.o parser.o ast.o
 
 main.o: parser.h ast.h
+
+asto.o: parser.h
 
 %.c %.h: %.y
 	$(YACC) $(YFLAGS) $< -o $(@:.h=.c)
