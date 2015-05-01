@@ -18,7 +18,7 @@ extern char *yytext;
 
 void yyerror(const char *message);
 
-struct ast_node *root;
+struct ast_node *root = NULL;
 %}
 
 %error-verbose
