@@ -17,6 +17,8 @@ extern int yylineno;
 extern char *yytext;
 
 void yyerror(const char *message);
+
+struct ast_node *root;
 %}
 
 %error-verbose
@@ -94,8 +96,8 @@ void yyerror(const char *message);
 
 %%
 
-start                   : PROGRAM ident SEMCO VAR varDecList compStmt DOT   { $$ = node_new(NODE_PROGRAM); $$->body[0] = $2; $$->body[1] = $5; $$->body[2] = $6; }
-                        | PROGRAM ident SEMCO compStmt DOT                  { $$ = node_new(NODE_PROGRAM); $$->body[0] = $2; $$->body[1] = $4; }
+start                   : PROGRAM ident SEMCO VAR varDecList compStmt DOT   { $$ = node_new(NODE_PROGRAM); $$->body[0] = $2; $$->body[1] = $5; $$->body[2] = $6; root = $$; }
+                        | PROGRAM ident SEMCO compStmt DOT                  { $$ = node_new(NODE_PROGRAM); $$->body[0] = $2; $$->body[1] = $4; root = $$; }
                         ;
 
 varDecList              : identListType SEMCO varDecList                    { $$ = node_new(NODE_VARDECLIST); $$->body[0] = $1; $$->next = $3; }

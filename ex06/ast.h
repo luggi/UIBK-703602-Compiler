@@ -210,4 +210,8 @@ struct ast_node {
 
 struct ast_node *node_new(enum ast_node_type type);
 
+void node_destroy(struct ast_node *node);
+
+void print_as_prascal(struct ast_node *node);
+
 #endif

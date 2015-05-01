@@ -8,7 +8,11 @@
 
 #include <stdio.h>
 
+#include "ast.h"
 #include "parser.h"
+
+/* root node of AST */
+extern struct ast_node *root;
 
 /* old bison version does not declare yyparse in header */
 extern int yyparse(void);
@@ -21,6 +25,9 @@ int main(int argc, char *argv[]) {
     if (ret == 0) {
         puts("input looks ok");
     }
+
+    puts("- - - - -   PRINTING  PRASCAL  - - - - -");
+    print_as_prascal(root);
 
     yylex_destroy();
     return ret;
