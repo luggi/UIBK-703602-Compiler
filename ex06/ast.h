@@ -208,10 +208,13 @@ struct ast_node {
 
 };
 
+/* returns a new node with set type, calls exit() on failure */
 struct ast_node *node_create(enum ast_node_type type);
 
+/* recursivly free node */
 void node_destroy(struct ast_node *node);
 
+/* AST back to prascal */
 void print_as_prascal(struct ast_node *node);
 
 #endif
