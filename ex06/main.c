@@ -26,11 +26,12 @@ void on_exit(void) {
 }
 
 int main(int argc, char *argv[]) {
-    int ret = yyparse();
     if (atexit(on_exit) != 0) {
         fprintf(stderr, "could not register exit hook\n");
         exit(EXIT_FAILURE);
     }
+
+    int ret = yyparse();
 
     if (ret == 0) {
         puts("input looks ok");
