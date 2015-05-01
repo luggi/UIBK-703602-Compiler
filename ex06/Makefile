@@ -13,7 +13,7 @@ clean:
 
 main: lexer.o parser.o
 
-main.o: parser.h
+main.o: parser.h ast.h
 
 %.c %.h: %.y
 	$(YACC) $(YFLAGS) $< -o $(@:.h=.c)

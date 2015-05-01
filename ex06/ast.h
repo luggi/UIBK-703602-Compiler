@@ -11,6 +11,8 @@
 
 #include <stdbool.h>
 
+#include "parser.h"
+
 #define AST_NODE_BODY_MAX_SIZE 5
 
 /* This enum defines all possible types for a node.
@@ -40,9 +42,6 @@ enum ast_node_type {
              * identListType (optional)
              * stmtList
              */
-
-    /* identifier */
-        NODE_IDENTIFIER,       /* store text in ident */
 
     /* identListType */
         NODE_IDENTLISTTYPE,
@@ -92,6 +91,21 @@ enum ast_node_type {
              * mulOp (optional)
              * simpleExpr (optional)
              */
+
+    /* identifier */
+        NODE_IDENTIFIER,        /* store text in ident */
+
+    /* toPart */
+        NODE_TOPART,            /* store operator in token */
+
+    /* relOp */
+        NODE_RELOP,             /* store operator in token */
+
+    /* addOp */
+        NODE_ADDOP,             /* store operator in token */
+
+    /* mulOp */
+        NODE_MULOP,             /* store operator in token */
 
     /* statement */
         STMT_ASSIGN,
@@ -153,30 +167,6 @@ enum ast_node_type {
             /* expr
              */
 
-    /* toPart */
-        TOPART_TO,
-        TOPART_DOWNTO,
-
-    /* relOp */
-        RELOP_EQ,
-        RELOP_GEQ,
-        RELOP_GT,
-        RELOP_LEQ,
-        RELOP_LT,
-        RELOP_NEQ,
-
-    /* addOp */
-        ADDOP_PLUS,
-        ADDOP_MINUS,
-        ADDOP_OR,
-
-    /* mulOp */
-        MULOP_ASTR,
-        MULOP_SLASH,
-        MULOP_DIV,
-        MULOP_MOD,
-        MULOP_AND,
-
 };
 
 struct ast_node {
@@ -195,6 +185,9 @@ struct ast_node {
 
         /* ident is used to store text of identifier */
         char *ident;
+
+        /* token is used to store the corresponding operator */
+        enum yytokentype token;
 
         /* value is used to store data */
         long int iValue;
