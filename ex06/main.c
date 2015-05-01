@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ast.h"
 #include "parser.h"
@@ -19,16 +20,23 @@ extern int yyparse(void);
 
 extern void yylex_destroy(void);
 
+void on_exit(void) {
+    yylex_destroy();
+    node_destroy(root);
+}
+
 int main(int argc, char *argv[]) {
     int ret = yyparse();
+    if (atexit(on_exit) != 0) {
+        fprintf(stderr, "could not register exit hook\n");
+        exit(EXIT_FAILURE);
+    }
 
     if (ret == 0) {
         puts("input looks ok");
+        puts("- - - - -   PRINTING  PRASCAL  - - - - -");
+        print_as_prascal(root);
     }
 
-    puts("- - - - -   PRINTING  PRASCAL  - - - - -");
-    print_as_prascal(root);
-
-    yylex_destroy();
     return ret;
 }

@@ -1,5 +1,6 @@
 override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable \
-                    -std=gnu99
+                    -std=gnu99 -D_XOPEN_SOURCE=700
+
 override YFLAGS  += -d -k
 
 YACC = bison

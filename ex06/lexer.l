@@ -7,6 +7,8 @@
  */
 
 %{
+#include <string.h>
+
 #include "parser.h"
 
 extern void yyerror(const char *message);
@@ -78,11 +80,11 @@ real                    return REAL;
  /* literals */
 false                   return FALSE;
 true                    return TRUE;
-{number}                return NUM;
-{string}                return STR;
+{number}                { yylval.number = atoi(yytext); return NUM; }
+{string}                { yylval.string = strndup(yytext, yyleng); return STR; }
 
  /* identifier */
-{identifier}            return IDENT;
+{identifier}            { yylval.identifier = strndup(yytext, yyleng); return IDENT; }
 
  /* comments */
 "{"                     BEGIN(COMMENT1);

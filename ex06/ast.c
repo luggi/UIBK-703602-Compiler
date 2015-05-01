@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct ast_node *node_new(enum ast_node_type type) {
+struct ast_node *node_create(enum ast_node_type type) {
     struct ast_node *node = (struct ast_node *) malloc(sizeof(struct ast_node));
     if (node == NULL) {
         fprintf(stderr, "could not allocate memory for AST node\n");
@@ -16,7 +16,55 @@ struct ast_node *node_new(enum ast_node_type type) {
 }
 
 void node_destroy(struct ast_node *node) {
-    /* todo */
+    if (node == NULL) {
+        return;
+    }
+
+    switch (node->type) {
+        case NODE_IDENT:
+            free(node->ident);
+            break;
+
+        case NODE_STR:
+            free(node->sValue);
+            break;
+
+        case NODE_PROGRAM:
+        case NODE_VARDECLIST:
+        case NODE_IDENTLISTTYPE:
+        case NODE_IDENTLIST:
+        case NODE_TYPE:
+        case NODE_STMTLIST:
+        case STMT_ASSIGN:
+        case STMT_IF:
+        case STMT_WHILE:
+        case STMT_FOR:
+        case STMT_READ:
+        case STMT_WRITE:
+        case NODE_EXPR:
+        case NODE_EXPRLIST:
+        case NODE_SIMPLEEXPR:
+        case NODE_TERM:
+        case NODE_IDENT_SUBSCR:
+        case FACTOR_NOT:
+        case FACTOR_MINUS:
+        case FACTOR_EXPR:
+            /* free all in body */
+            for (unsigned int i = 0; i < AST_NODE_BODY_MAX_SIZE; i++) {
+                node_destroy(node->body[i]);
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    if (node->next != NULL) {
+        node_destroy(node->next);
+    }
+
+    /* this node */
+    free(node);
 }
 
 static void print_NODE_PROGRAM(struct ast_node *node) {
@@ -34,7 +82,7 @@ static void print_NODE_PROGRAM(struct ast_node *node) {
         print_as_prascal(node->body[1]);
         printf(" END ");
     }
-    printf(" . ");
+    printf(" .\n");
 }
 
 static void print_NODE_VARDECLIST(struct ast_node *node) {

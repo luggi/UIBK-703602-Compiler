@@ -208,7 +208,7 @@ struct ast_node {
 
 };
 
-struct ast_node *node_new(enum ast_node_type type);
+struct ast_node *node_create(enum ast_node_type type);
 
 void node_destroy(struct ast_node *node);
 
