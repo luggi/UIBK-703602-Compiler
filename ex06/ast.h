@@ -95,6 +95,9 @@ enum ast_node_type {
     /* identifier */
         NODE_IDENTIFIER,        /* store text in ident */
 
+    /* simpleType */
+        NODE_SIMPLETYPE,        /* store type in token */
+
     /* toPart */
         NODE_TOPART,            /* store operator in token */
 

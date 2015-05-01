@@ -87,6 +87,13 @@
         <td>no</td>
     </tr>
     <tr>
+        <td>simpleType</td>
+        <td>NODE_SIMPLETYPE</td>
+        <td></td>
+        <td>type</td>
+        <td>no</td>
+    </tr>
+    <tr>
         <td>toPart</td>
         <td>NODE_TOPART</td>
         <td></td>
