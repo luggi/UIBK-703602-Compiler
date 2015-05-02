@@ -1,5 +1,5 @@
 override CFLAGS  += -Wall -Werror -Wno-unused-function -Wno-unused-variable \
-                    -std=gnu99 -D_XOPEN_SOURCE=700
+                    -std=gnu99
 
 override YFLAGS  += -d -k
 

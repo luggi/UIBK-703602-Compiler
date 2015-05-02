@@ -12,6 +12,8 @@
 #include "parser.h"
 
 extern void yyerror(const char *message);
+
+char *strndup(const char *start, size_t len);
 %}
 
 %option noyywrap
@@ -110,3 +112,13 @@ true                    return TRUE;
 .                       yyerror("unknown symbol");
 
 %%
+
+char *strndup(const char *start, size_t len) {
+    char *ret = (char *) malloc(sizeof(char) * (len + 1));
+    if (ret == NULL)  {
+        yyerror("could not allocate memory for strndup");
+    }
+    memcpy(ret, start, len);
+    ret[len] = 0;
+    return ret;
+}

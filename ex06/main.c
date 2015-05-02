@@ -20,13 +20,15 @@ extern int yyparse(void);
 
 extern void yylex_destroy(void);
 
-void on_exit(void) {
+void exit_hook(void) {
     yylex_destroy();
-    node_destroy(root);
+    if (root) {
+        node_destroy(root);
+    }
 }
 
 int main(int argc, char *argv[]) {
-    if (atexit(on_exit) != 0) {
+    if (atexit(exit_hook) != 0) {
         fprintf(stderr, "could not register exit hook\n");
         exit(EXIT_FAILURE);
     }
