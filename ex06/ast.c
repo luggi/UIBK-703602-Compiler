@@ -199,9 +199,9 @@ static void print_NODE_TYPE(struct ast_node *node) {
 
 static void print_NODE_SIMPLETYPE(struct ast_node *node) {
     switch (node->token) {
-        case INTEGER : printf(" INTEGER ") ; break ;
-        case REAL    : printf(" REAL ")    ; break ;
-        case BOOLEAN : printf(" BOOLEAN ") ; break ;
+        case INTEGER : printf(" integer ") ; break ;
+        case REAL    : printf(" real ")    ; break ;
+        case BOOLEAN : printf(" boolean ") ; break ;
         default:
             fprintf(stderr, "\n\nunknown token in SIMPLETYPE\n");
             exit(EXIT_FAILURE);
