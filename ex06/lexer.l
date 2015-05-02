@@ -21,7 +21,8 @@ char *strndup(const char *start, size_t len);
 
 %x COMMENT1 COMMENT2
 
-number                  [0-9]+
+integer                 [0-9]+
+real                    [0-9]*\.[0-9]+
 string                  \"(\\.|[^"])*\"
 identifier              [a-zA-Z_][a-zA-Z0-9_]*
 
@@ -82,8 +83,9 @@ real                    return REAL;
  /* literals */
 false                   return FALSE;
 true                    return TRUE;
-{number}                { yylval.number = atoi(yytext); return NUM; }
-{string}                { yylval.string = strndup(yytext + 1, yyleng - 2); return STR; }
+{integer}               { yylval.integer = atoi(yytext);                   return INT_VALUE;  }
+{real}                  { yylval.real = atof(yytext);                      return REAL_VALUE; }
+{string}                { yylval.string = strndup(yytext + 1, yyleng - 2); return STR;  }
 
  /* identifier */
 {identifier}            { yylval.identifier = strndup(yytext, yyleng); return IDENT; }

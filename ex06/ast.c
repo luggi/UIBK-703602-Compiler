@@ -94,7 +94,8 @@ static void print_NODE_FACTOR_NOT(struct ast_node *node);
 static void print_NODE_FACTOR_MINUS(struct ast_node *node);
 static void print_NODE_FACTOR_EXPR(struct ast_node *node);
 static void print_NODE_IDENT_SUBSCR(struct ast_node *node);
-static void print_NODE_NUM(struct ast_node *node);
+static void print_NODE_INT(struct ast_node *node);
+static void print_NODE_REAL(struct ast_node *node);
 static void print_NODE_STR(struct ast_node *node);
 static void print_NODE_BOOL(struct ast_node *node);
 static void print_NODE_IDENT(struct ast_node *node);
@@ -133,7 +134,8 @@ void print_as_prascal(struct ast_node *node) {
         case NODE_FACTOR_MINUS  : print_NODE_FACTOR_MINUS(node)  ; break ;
         case NODE_FACTOR_EXPR   : print_NODE_FACTOR_EXPR(node)   ; break ;
         case NODE_IDENT         : print_NODE_IDENT(node)         ; break ;
-        case NODE_NUM           : print_NODE_NUM(node)           ; break ;
+        case NODE_INT           : print_NODE_INT(node)           ; break ;
+        case NODE_REAL          : print_NODE_REAL(node)          ; break ;
         case NODE_STR           : print_NODE_STR(node)           ; break ;
         case NODE_BOOL          : print_NODE_BOOL(node)          ; break ;
         case NODE_RELOP         : print_NODE_RELOP(node)         ; break ;
@@ -341,8 +343,12 @@ static void print_NODE_IDENT(struct ast_node *node) {
     printf(" %s ", node->ident);
 }
 
-static void print_NODE_NUM(struct ast_node *node) {
+static void print_NODE_INT(struct ast_node *node) {
     printf(" %ld ", node->iValue);
+}
+
+static void print_NODE_REAL(struct ast_node *node) {
+    printf(" %f ", node->fValue);
 }
 
 static void print_NODE_STR(struct ast_node *node) {

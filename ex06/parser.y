@@ -28,7 +28,8 @@ struct ast_node *root = NULL;
     char *identifier;
 
     /* const value */
-    int number;
+    int integer;
+    double real;
     char *string;
 
     /* AST node */
@@ -39,7 +40,8 @@ struct ast_node *root = NULL;
 %token <identifier> IDENT
 
 /* literals */
-%token <number> NUM
+%token <integer> INT_VALUE
+%token <real>   REAL_VALUE
 %token <string> STR
 
 /* nodes */
@@ -186,7 +188,8 @@ factor                  : ident                                             { $$
 ident                   : IDENT                                             { $$ = node_create(NODE_IDENT); $$->ident = $1; }
                         ;
 
-num                     : NUM                                               { $$ = node_create(NODE_NUM); $$->iValue = $1; }
+num                     : INT_VALUE                                         { $$ = node_create(NODE_INT);  $$->iValue = $1; }
+                        | REAL_VALUE                                        { $$ = node_create(NODE_REAL); $$->fValue = $1; }
                         ;
 
 str                     : STR                                               { $$ = node_create(NODE_STR); $$->sValue = $1; }
