@@ -346,7 +346,7 @@ static void print_NODE_NUM(struct ast_node *node) {
 }
 
 static void print_NODE_STR(struct ast_node *node) {
-    printf(" %s ", node->sValue);
+    printf(" \"%s\" ", node->sValue);
 }
 
 static void print_NODE_BOOL(struct ast_node *node) {

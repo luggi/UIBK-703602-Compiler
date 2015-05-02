@@ -83,7 +83,7 @@ real                    return REAL;
 false                   return FALSE;
 true                    return TRUE;
 {number}                { yylval.number = atoi(yytext); return NUM; }
-{string}                { yylval.string = strndup(yytext, yyleng); return STR; }
+{string}                { yylval.string = strndup(yytext + 1, yyleng - 2); return STR; }
 
  /* identifier */
 {identifier}            { yylval.identifier = strndup(yytext, yyleng); return IDENT; }
