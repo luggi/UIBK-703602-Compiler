@@ -172,31 +172,31 @@ static void print_as_graphviz_rec(struct ast_node *node) {
 static void print_node_as_graphviz(struct ast_node *node) {
     switch (node->type) {
         case NODE_IDENT:
-            printf("\"(%p) %s\"", node, node->ident);
+            printf("\"(%p)\\n%s\"", node, node->ident);
             break;
 
         case NODE_STR:
-            printf("\"(%p) %s\"", node, node->sValue);
+            printf("\"(%p)\\n\\\"%s\\\"\"", node, node->sValue);
             break;
 
         case NODE_INT:
-            printf("\"(%p) %ld\"", node, node->iValue);
+            printf("\"(%p)\\n%ld\"", node, node->iValue);
             break;
 
         case NODE_REAL:
-            printf("\"(%p) %f\"", node, node->fValue);
+            printf("\"(%p)\\n%f\"", node, node->fValue);
             break;
 
         case NODE_BOOL:
             if (node->bValue) {
-                printf("\"(%p) True\"", node);
+                printf("\"(%p)\\nTrue\"", node);
             } else {
-                printf("\"(%p) False\"", node);
+                printf("\"(%p)\\nFalse\"", node);
             }
             break;
 
         default:
-            printf("\"(%p) %s\"", node, node_type_string(node->type));
+            printf("\"(%p)\\n%s\"", node, node_type_string(node->type));
             break;
     }
 }
