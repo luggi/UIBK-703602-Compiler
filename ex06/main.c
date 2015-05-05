@@ -36,10 +36,10 @@ int main(int argc, char *argv[]) {
     int ret = yyparse();
 
     if (ret == 0) {
-        puts("input looks ok");
-        puts("- - - - -   PRINTING  PRASCAL  - - - - -");
-        print_as_prascal(root);
-        /* print_as_graphviz(root); */
+        /* puts("input looks ok"); */
+        /* puts("- - - - -   PRINTING  PRASCAL  - - - - -"); */
+        /* print_ast_as_prascal(root); */
+        print_ast_as_graphviz(root);
     }
 
     return ret;

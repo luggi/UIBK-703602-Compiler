@@ -81,16 +81,16 @@ struct ast_node {
 };
 
 /* returns a new node with set type, calls exit() on failure */
-struct ast_node *node_create(enum ast_node_type type);
+struct ast_node *node_create(const enum ast_node_type type);
 
 /* recursivly free node */
 void node_destroy(struct ast_node *node);
 
 /* AST back to prascal */
-void print_as_prascal(struct ast_node *node);
+void print_ast_as_prascal(const struct ast_node *node);
 
 /* AST as graphviz */
-void print_as_graphviz(struct ast_node *node);
+void print_ast_as_graphviz(const struct ast_node *node);
 
 /* returns string representation of node type */
 const char *node_type_string(const enum ast_node_type);
