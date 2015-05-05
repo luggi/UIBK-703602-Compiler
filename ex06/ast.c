@@ -110,7 +110,7 @@ const char *node_type_string(const enum ast_node_type type) {
 
 static void print_as_graphviz_rec(struct ast_node *node);
 void print_as_graphviz(struct ast_node *node) {
-    puts("digraph unix {");
+    puts("digraph ast {");
     puts("\tnode [color=lightblue2, style=filled];");
     print_as_graphviz_rec(node);
     puts("}");
