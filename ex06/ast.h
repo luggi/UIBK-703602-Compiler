@@ -89,4 +89,10 @@ void node_destroy(struct ast_node *node);
 /* AST back to prascal */
 void print_as_prascal(struct ast_node *node);
 
+/* AST as graphviz */
+void print_as_graphviz(struct ast_node *node);
+
+/* returns string representation of node type */
+const char *node_type_string(const enum ast_node_type);
+
 #endif

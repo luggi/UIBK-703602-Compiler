@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
         puts("input looks ok");
         puts("- - - - -   PRINTING  PRASCAL  - - - - -");
         print_as_prascal(root);
+        /* print_as_graphviz(root); */
     }
 
     return ret;

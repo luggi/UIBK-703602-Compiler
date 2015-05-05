@@ -69,6 +69,138 @@ void node_destroy(struct ast_node *node) {
     free(node);
 }
 
+const char *node_type_string(const enum ast_node_type type) {
+    switch (type) {
+        case NODE_PROGRAM       : return "PROGRAM"       ; break ;
+        case NODE_VARDEC        : return "VARDEC"        ; break ;
+        case NODE_VARDECLIST    : return "VARDECLIST"    ; break ;
+        case NODE_IDENTLISTTYPE : return "IDENTLISTTYPE" ; break ;
+        case NODE_IDENTLIST     : return "IDENTLIST"     ; break ;
+        case NODE_TYPE          : return "TYPE"          ; break ;
+        case NODE_SIMPLETYPE    : return "SIMPLETYPE"    ; break ;
+        case NODE_COMPSTMT      : return "COMPSTMT"      ; break ;
+        case NODE_STMTLIST      : return "STMTLIST"      ; break ;
+        case NODE_STMT_ASSIGN   : return "STMT_ASSIGN"   ; break ;
+        case NODE_STMT_IF       : return "STMT_IF"       ; break ;
+        case NODE_STMT_WHILE    : return "STMT_WHILE"    ; break ;
+        case NODE_STMT_FOR      : return "STMT_FOR"      ; break ;
+        case NODE_STMT_READ     : return "STMT_READ"     ; break ;
+        case NODE_STMT_WRITE    : return "STMT_WRITE"    ; break ;
+        case NODE_TOPART        : return "TOPART"        ; break ;
+        case NODE_EXPR          : return "EXPR"          ; break ;
+        case NODE_EXPRLIST      : return "EXPRLIST"      ; break ;
+        case NODE_SIMPLEEXPR    : return "SIMPLEEXPR"    ; break ;
+        case NODE_TERM          : return "TERM"          ; break ;
+        case NODE_FACTOR_NOT    : return "FACTOR_NOT"    ; break ;
+        case NODE_FACTOR_MINUS  : return "FACTOR_MINUS"  ; break ;
+        case NODE_FACTOR_EXPR   : return "FACTOR_EXPR"   ; break ;
+        case NODE_IDENT         : return "IDENT"         ; break ;
+        case NODE_INT           : return "INT"           ; break ;
+        case NODE_REAL          : return "REAL"          ; break ;
+        case NODE_STR           : return "STR"           ; break ;
+        case NODE_BOOL          : return "BOOL"          ; break ;
+        case NODE_RELOP         : return "RELOP"         ; break ;
+        case NODE_ADDOP         : return "ADDOP"         ; break ;
+        case NODE_MULOP         : return "MULOP"         ; break ;
+        case NODE_IDENT_SUBSCR  : return "IDENT_SUBSCR"  ; break ;
+        default                 :
+            return "Unknown Node Type";
+    }
+}
+
+static void print_as_graphviz_rec(struct ast_node *node);
+void print_as_graphviz(struct ast_node *node) {
+    puts("digraph unix {");
+    puts("\tnode [color=lightblue2, style=filled];");
+    print_as_graphviz_rec(node);
+    puts("}");
+}
+
+static void print_node_as_graphviz(struct ast_node *node);
+static void print_as_graphviz_rec(struct ast_node *node) {
+    switch (node->type) {
+        case NODE_PROGRAM:
+        case NODE_VARDEC:
+        case NODE_VARDECLIST:
+        case NODE_IDENTLISTTYPE:
+        case NODE_IDENTLIST:
+        case NODE_TYPE:
+        case NODE_COMPSTMT:
+        case NODE_STMTLIST:
+        case NODE_STMT_ASSIGN:
+        case NODE_STMT_IF:
+        case NODE_STMT_WHILE:
+        case NODE_STMT_FOR:
+        case NODE_STMT_READ:
+        case NODE_STMT_WRITE:
+        case NODE_EXPR:
+        case NODE_EXPRLIST:
+        case NODE_SIMPLEEXPR:
+        case NODE_TERM:
+        case NODE_FACTOR_NOT:
+        case NODE_FACTOR_MINUS:
+        case NODE_FACTOR_EXPR:
+        case NODE_IDENT_SUBSCR:
+            for (unsigned int i = 0; i < AST_NODE_BODY_MAX_SIZE; i++) {
+                if (node->body[i] == NULL) {
+                    continue;
+                }
+                printf("\t");
+                print_node_as_graphviz(node);
+                printf(" -> ");
+                print_node_as_graphviz(node->body[i]);
+                printf(";\n");
+                print_as_graphviz_rec(node->body[i]);
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    /* if uses next */
+    if (node->next) {
+        printf("\t");
+        print_node_as_graphviz(node);
+        printf(" -> ");
+        print_node_as_graphviz(node->next);
+        printf(";\n");
+        print_as_graphviz_rec(node->next);
+    }
+}
+
+static void print_node_as_graphviz(struct ast_node *node) {
+    switch (node->type) {
+        case NODE_IDENT:
+            printf("\"(%p) %s\"", node, node->ident);
+            break;
+
+        case NODE_STR:
+            printf("\"(%p) %s\"", node, node->sValue);
+            break;
+
+        case NODE_INT:
+            printf("\"(%p) %ld\"", node, node->iValue);
+            break;
+
+        case NODE_REAL:
+            printf("\"(%p) %f\"", node, node->fValue);
+            break;
+
+        case NODE_BOOL:
+            if (node->bValue) {
+                printf("\"(%p) True\"", node);
+            } else {
+                printf("\"(%p) False\"", node);
+            }
+            break;
+
+        default:
+            printf("\"(%p) %s\"", node, node_type_string(node->type));
+            break;
+    }
+}
+
 /* print functions */
 static void print_NODE_PROGRAM(struct ast_node *node);
 static void print_NODE_VARDEC(struct ast_node *node);
