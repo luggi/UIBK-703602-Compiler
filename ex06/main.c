@@ -36,8 +36,7 @@ int main(int argc, char *argv[]) {
     int ret = yyparse();
 
     if (ret == 0) {
-        puts("input looks ok");
-        puts("- - - - -   PRINTING  PRASCAL  - - - - -");
+        puts("{* input looks ok *}");
         print_ast_as_prascal(root);
         /* print_ast_as_graphviz(root); */
     }
