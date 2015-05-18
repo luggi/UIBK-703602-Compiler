@@ -224,6 +224,56 @@ static void print_node_as_graphviz(const struct ast_node *node) {
             }
             break;
 
+        case NODE_RELOP: {
+            printf("\"(%p)\\n%s\\n", node,
+                    node_type_string(node->type));
+            switch (node->token) {
+                case LT  : printf("<")  ; break ;
+                case LEQ : printf("<=") ; break ;
+                case GT  : printf(">")  ; break ;
+                case GEQ : printf(">=") ; break ;
+                case EQ  : printf("=")  ; break ;
+                case NEQ : printf("<>") ; break ;
+                default:
+                    fprintf(stderr, "\n\nunknown token in RELOP\n");
+                    exit(EXIT_FAILURE);
+            }
+            printf("\"");
+            break;
+        }
+
+        case NODE_ADDOP: {
+            printf("\"(%p)\\n%s\\n", node,
+                    node_type_string(node->type));
+            switch (node->token) {
+                case PLUS  : printf("+")  ; break ;
+                case MINUS : printf("-")  ; break ;
+                case OR    : printf("OR") ; break ;
+                default:
+                    fprintf(stderr, "\n\nunknown token in ADDOP\n");
+                    exit(EXIT_FAILURE);
+            }
+            printf("\"");
+            break;
+        }
+
+        case NODE_MULOP: {
+            printf("\"(%p)\\n%s\\n", node,
+                    node_type_string(node->type));
+            switch (node->token) {
+                case ASTR  : printf("*")   ; break ;
+                case SLASH : printf("/")   ; break ;
+                case DIV   : printf("DIV") ; break ;
+                case MOD   : printf("MOD") ; break ;
+                case AND   : printf("AND") ; break ;
+                default:
+                    fprintf(stderr, "\n\nunknown token in MULOP\n");
+                    exit(EXIT_FAILURE);
+            }
+            printf("\"");
+            break;
+        }
+
         default:
             printf("\"(%p)\\n%s\"", node, node_type_string(node->type));
             break;
