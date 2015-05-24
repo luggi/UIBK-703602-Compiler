@@ -70,12 +70,14 @@ struct ast_node {
         /* token is used to store the corresponding operator */
         enum yytokentype token;
 
+        /* symbol is a reference to the symbol table */
+        struct symbol_entry* symbol;
+
         /* value is used to store data */
         long int iValue;
         double fValue;
-        bool bValue;
         char *sValue;
-
+        bool bValue;
     };
 
 };

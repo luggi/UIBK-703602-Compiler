@@ -29,10 +29,6 @@ void node_destroy(struct ast_node *node) {
     }
 
     switch (node->type) {
-        case NODE_IDENT:
-            free(node->ident);
-            break;
-
         case NODE_STR:
             free(node->sValue);
             break;

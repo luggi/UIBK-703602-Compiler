@@ -12,7 +12,7 @@ all: main
 clean:
 	$(RM) *.o main lexer.c parser.h parser.c
 
-main: graphviz_writer.o prascal_writer.o lexer.o parser.o ast.o
+main: ast.o lexer.o list.o parser.o symbol_table.o
 
 main.o: parser.h ast.h
 
@@ -20,7 +20,7 @@ ast.o: parser.h
 
 prascal_writer.o: parser.h
 
-graphviz_writer.o: parser.h
+parser.o: list.o symbol_table.o
 
 %.c %.h: %.y
 	$(YACC) $(YFLAGS) $< -o $(@:.h=.c)

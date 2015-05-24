@@ -10,37 +10,36 @@
 #include <stdlib.h>
 
 #include "ast.h"
-#include "graphviz_writer.h"
 #include "parser.h"
-#include "prascal_writer.h"
+/* #include "prascal_writer.h" */
+#include "list.h"
 
-/* root node of AST */
-extern struct ast_node *root;
-
-/* old bison version does not declare yyparse in header */
-extern int yyparse(void);
-
-extern void yylex_destroy(void);
+/* TODO: this should be part of parser.h */
+extern void parser_create();
+extern void parser_destroy(void);
+extern int parser_run(void);
+extern struct ast_node *parser_get_root_node(void);
+extern struct list_head *parser_get_symbol_table(void);
+extern void print_symbol_table(void);
 
 void exit_hook(void) {
-    yylex_destroy();
-    if (root) {
-        node_destroy(root);
-    }
+    parser_destroy();
 }
 
 int main(int argc, char *argv[]) {
+    parser_create();
+
     if (atexit(exit_hook) != 0) {
         fprintf(stderr, "could not register exit hook\n");
         exit(EXIT_FAILURE);
     }
 
-    int ret = yyparse();
+    int ret = parser_run();
 
     if (ret == 0) {
         puts("{* input looks ok *}");
-        print_ast_as_prascal(root);
-        /* print_ast_as_graphviz(root); */
+        print_symbol_table();
+        /* print_ast_as_prascal(root); */
     }
 
     return ret;
