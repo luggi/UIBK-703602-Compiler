@@ -35,4 +35,13 @@ struct symbol_entry *symbol_entry_create(const enum symbol_type etype,
 
 void symbol_entry_destroy(struct symbol_entry *entry);
 
+struct list_head *symbol_table_create(void);
+
+/* frees the symbol table and its contents */
+void symbol_table_destroy(struct list_head *table);
+
+/* returns entry with name ident or NULL */
+struct symbol_entry *symbol_table_lookup(const struct list_head *table,
+        const char *ident);
+
 #endif

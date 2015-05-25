@@ -106,7 +106,7 @@ static void ident_to_symbol_table(struct ast_node *ident);
 
 %%
 
-start                   : PROGRAM ident SEMCO varDec compStmt DOT           { $$ = node_create(NODE_PROGRAM); $$->body[0] = $2; $$->body[1] = $4; $$->body[2] = $5; ROOT_NODE = $$; }
+start                   : PROGRAM ident SEMCO varDec compStmt DOT           { $$ = node_create(NODE_PROGRAM); free($2->ident); node_destroy($2); $$->body[0] = $4; $$->body[1] = $5; ROOT_NODE = $$; }
                         ;
 
 varDec                  : VAR varDecList                                    { $$ = node_create(NODE_VARDEC); $$->body[0] = $2; }
@@ -230,7 +230,7 @@ mulOp                   : ASTR                                              { $$
 %%
 
 void parser_create(void) {
-    SYMBOL_TABLE = list_create();
+    SYMBOL_TABLE = symbol_table_create();
 }
 
 void parser_destroy(void) {
@@ -241,17 +241,7 @@ void parser_destroy(void) {
     }
 
     if (SYMBOL_TABLE) {
-        for (struct list_node *node = SYMBOL_TABLE->first; node != NULL; node = node->next) {
-            struct symbol_entry *entry = (struct symbol_entry *) node->data;
-
-            /* symbol has been allocated by the parser using strndup */
-            free(entry->symbol);
-
-            /* free the symbol_entry itself */
-            free(entry);
-        }
-
-        list_destroy(SYMBOL_TABLE);
+        symbol_table_destroy(SYMBOL_TABLE);
     }
 }
 
@@ -311,13 +301,10 @@ static void identListType_to_symbol_table(struct ast_node *identListType) {
         struct ast_node *ident = identList->body[0];
 
         /* check if ident already present */
-        for (struct list_node *node = SYMBOL_TABLE->first; node != NULL; node = node->next) {
-            struct symbol_entry *entry = (struct symbol_entry *) node->data;
-            if (strcmp(entry->symbol, ident->ident) == 0) {
-                fprintf(stderr, "Error: Line %d: symbol already declared '%s'\n",
-                        yylineno, ident->ident);
-                exit(EXIT_FAILURE);
-            }
+        if (symbol_table_lookup(SYMBOL_TABLE, ident->ident)) {
+            fprintf(stderr, "Error: Line %d: symbol already declared '%s'\n",
+                    yylineno, ident->ident);
+            exit(EXIT_FAILURE);
         }
 
         /* new entry */
@@ -334,19 +321,14 @@ static void identListType_to_symbol_table(struct ast_node *identListType) {
 /* looks up the corresponding entry in the symbol table and rewrites the node
  * to hold a reference to the entry. calls exit if entry is not present. */
 static void ident_to_symbol_table(struct ast_node *ident) {
-    for (struct list_node *node = SYMBOL_TABLE->first; node != NULL; node = node->next) {
-        struct symbol_entry *entry = (struct symbol_entry *) node->data;
-        if (strcmp(entry->symbol, ident->ident) == 0) {
-            /* ident has been allocated by the parser using strndup */
-            free(ident->ident);
+    struct symbol_entry *entry = symbol_table_lookup(SYMBOL_TABLE, ident->ident);
 
-            /* store reference to symbol table inside node */
-            ident->symbol = entry;
-
-            return;
-        }
+    if (entry == NULL) {
+        fprintf(stderr, "Error: Line %d: unknown symbol '%s'\n", yylineno,
+                ident->ident);
+        exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "Error: Line %d: unknown symbol '%s'\n", yylineno,
-            ident->ident);
-    exit(EXIT_FAILURE);
+
+    free(ident->ident);
+    ident->symbol = entry;
 }

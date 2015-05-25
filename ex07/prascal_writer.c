@@ -92,13 +92,11 @@ void print_ast_as_prascal(const struct ast_node *node) {
 }
 
 static void print_NODE_PROGRAM(const struct ast_node *node) {
-    printf(" PROGRAM ");
-    print_ast_as_prascal(node->body[0]);
-    printf(" ; ");
-    if (node->body[1]) {
+    printf(" PROGRAM minipas ; ");
+    if (node->body[0]) {
         print_ast_as_prascal(node->body[1]);
     }
-    print_ast_as_prascal(node->body[2]);
+    print_ast_as_prascal(node->body[1]);
     printf(" .\n");
 }
 
