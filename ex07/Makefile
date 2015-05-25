@@ -18,9 +18,7 @@ main.o: parser.h ast.h
 
 ast.o: parser.h
 
-prascal_writer.o: parser.h symbol_table.o
-
-parser.o: list.o symbol_table.o
+prascal_writer.o: parser.h
 
 %.c %.h: %.y
 	$(YACC) $(YFLAGS) $< -o $(@:.h=.c)
