@@ -11,7 +11,7 @@
 
 #include "ast.h"
 #include "parser.h"
-/* #include "prascal_writer.h" */
+#include "prascal_writer.h"
 #include "list.h"
 
 /* TODO: this should be part of parser.h */
@@ -38,8 +38,10 @@ int main(int argc, char *argv[]) {
 
     if (ret == 0) {
         puts("{* input looks ok *}");
+        puts("{* symbol table:");
         print_symbol_table();
-        /* print_ast_as_prascal(root); */
+        puts("*}");
+        print_ast_as_prascal(parser_get_root_node());
     }
 
     return ret;

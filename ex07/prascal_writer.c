@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "symbol_table.h"
+
 static void print_NODE_PROGRAM(const struct ast_node *node);
 static void print_NODE_VARDEC(const struct ast_node *node);
 static void print_NODE_VARDECLIST(const struct ast_node *node);
@@ -281,7 +283,8 @@ static void print_NODE_IDENT_SUBSCR(const struct ast_node *node) {
 }
 
 static void print_NODE_IDENT(const struct ast_node *node) {
-    printf(" %s ", node->ident);
+    struct symbol_entry *entry = (struct symbol_entry *) node->symbol;
+    printf(" %s ", entry->symbol);
 }
 
 static void print_NODE_INT(const struct ast_node *node) {

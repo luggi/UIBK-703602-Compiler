@@ -12,13 +12,13 @@ all: main
 clean:
 	$(RM) *.o main lexer.c parser.h parser.c
 
-main: ast.o lexer.o list.o parser.o symbol_table.o
+main: ast.o lexer.o list.o parser.o prascal_writer.o symbol_table.o
 
 main.o: parser.h ast.h
 
 ast.o: parser.h
 
-prascal_writer.o: parser.h
+prascal_writer.o: parser.h symbol_table.o
 
 parser.o: list.o symbol_table.o
 
