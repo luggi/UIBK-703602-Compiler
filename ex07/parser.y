@@ -277,9 +277,9 @@ static void identListType_to_symbol_table(struct ast_node *identListType) {
     /* process entry type */
     enum symbol_type etype;
     if (type_node->body[0]) {
-        etype = SYMBOL_SCALAR;
-    } else {
         etype = SYMBOL_ARRAY;
+    } else {
+        etype = SYMBOL_SCALAR;
     }
 
     /* process data type */
