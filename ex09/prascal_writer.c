@@ -192,14 +192,14 @@ static void print_NODE_STMT_ASSIGN(const struct ast_node *node) {
         //calculate the index //shift left <<2 = *4
         printf("\tsll\t$t0, $t0, 2 #index calculation\n");
         //load array andress in $t1
-        printf("\tla\t$t1, %s #load array address\n", node->body[1]->symbol);
+        printf("\tla\t$t1, %s #load array address\n", node->body[1]->symbol->symbol);
         //add offset to adress
         printf("\tadd\t$t1, $t1, $t0\n");
         //store the value of $t2 at the adress of the array in $t1
         printf("\tsw\t$t2, ($t1) #store value in array adress\n");
         //printf(" ] ");
     }else{
-         printf("\tsw\t$t0, %s #store result\n", node->body[0]->symbol);
+         printf("\tsw\t$t0, %s #store result\n", node->body[0]->symbol->symbol);
     }
     
 }
@@ -256,7 +256,7 @@ static void print_NODE_STMT_FOR(const struct ast_node *node) {
     print_ast_as_prascal(node->body[1]);
     printf("\tmove\t$t2, $t0 #store identifier val in $t2\n"); 
     //assign value to i
-    printf("\tsw\t$t2, %s\n", node->body[0]->symbol);
+    printf("\tsw\t$t2, %s\n", node->body[0]->symbol->symbol);
     //save upper bound in $t3
     print_ast_as_prascal(node->body[3]);
     printf("\tmove\t$t3, $t0 #store upper bound in $t3\n"); 
@@ -267,11 +267,11 @@ static void print_NODE_STMT_FOR(const struct ast_node *node) {
     //code
     print_ast_as_prascal(node->body[4]);
     //load value of i into t1 + save val in t2
-    printf("\tlw\t$t2, %s\n", NODE_MULOP->body[0]->symbol->symbol.scalar);
+    printf("\tlw\t$t2, %s\n", NODE_MULOP->body[0]->symbol->symbol);
     //printf("\tmove\t$t2, $t0 #store identifier val in $t2\n"); 
     //increase and store i 
     printf("\taddi\t$t2, $t2, 1 #increase counter\n");
-    printf("\tsw\t$t2, %s #store i\n", node->body[0]->symbol);
+    printf("\tsw\t$t2, %s #store i\n", node->body[0]->symbol->symbol);
     //save upper bound in $t3
     generateNode(node->body[3]);
     printf("\tmove\t$t3, $t0 #store upper bound in $t3\n"); 
