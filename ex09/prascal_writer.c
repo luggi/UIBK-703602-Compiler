@@ -14,8 +14,8 @@
 #include "symbol_table.h"
 
 int labelc;
-char t0;
-char t1;
+char *t0;
+char *t1;
 
 static void print_NODE_PROGRAM(const struct ast_node *node);
 static void print_NODE_VARDEC(const struct ast_node *node);
