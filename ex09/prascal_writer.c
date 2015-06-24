@@ -398,7 +398,7 @@ static void print_NODE_IDENT(const struct ast_node *node) {
               break;
             case TYPE_BOOLEAN:
               printf("\tli\t$v0, 1\t#load sys-call to print int\n");
-              printf("\tlw\t$a0, %ld #load int adress into a0\n", node->bValue);
+              printf("\tlw\t$a0, %d #load int adress into a0\n", node->bValue);
               break;
             case TYPE_REAL:
               printf("\tli\t$v0, 2\t#load sys-call to print float\n");
