@@ -256,7 +256,7 @@ static void print_NODE_STMT_FOR(const struct ast_node *node) {
     print_ast_as_prascal(node->body[1]);
     printf("\tmove\t$t2, $t0 #store identifier val in $t2\n"); 
     //assign value to i
-    printf("\tsw\t$t2, %s\n", n->body[0]->symbol);
+    printf("\tsw\t$t2, %s\n", node->body[0]->symbol);
     //save upper bound in $t3
     print_ast_as_prascal(node->body[3]);
     printf("\tmove\t$t3, $t0 #store upper bound in $t3\n"); 
@@ -267,13 +267,13 @@ static void print_NODE_STMT_FOR(const struct ast_node *node) {
     //code
     print_ast_as_prascal(node->body[4]);
     //load value of i into t1 + save val in t2
-    printf("\tlw\t$t2, %s\n", n->body[0]->symbol->symbol.scalar);
+    printf("\tlw\t$t2, %s\n", NODE_MULOP->body[0]->symbol->symbol.scalar);
     //printf("\tmove\t$t2, $t0 #store identifier val in $t2\n"); 
     //increase and store i 
     printf("\taddi\t$t2, $t2, 1 #increase counter\n");
-    printf("\tsw\t$t2, %s #store i\n", n->body[0]->symbol);
+    printf("\tsw\t$t2, %s #store i\n", node->body[0]->symbol);
     //save upper bound in $t3
-    generateNode(n->body[3]);
+    generateNode(node->body[3]);
     printf("\tmove\t$t3, $t0 #store upper bound in $t3\n"); 
     //jump to for label
     printf("\tj\tfor_%03d\n",labelc);
@@ -429,7 +429,7 @@ static void print_NODE_BOOL(const struct ast_node *node) {
      printf("\tsw\t$v0, %s #store read value from v0\n", node->bValue);
 }
 
-static void print_NODE_RELOP(const struct ast_node *node, char t0, char t1) {
+static void print_NODE_RELOP(const struct ast_node *node) {
     switch (node->token) {
         case LT  : printf("\tslt\t%s, %s, %s\n", t0, t1, t0); break ;
         case LEQ : printf("\tsle\t%s, %s, %s\n", t0, t1, t0); break ;
@@ -443,7 +443,7 @@ static void print_NODE_RELOP(const struct ast_node *node, char t0, char t1) {
     }
 }
 
-static void print_NODE_ADDOP(const struct ast_node *node, char t0, char t1) {
+static void print_NODE_ADDOP(const struct ast_node *node) {
     switch (node->token) {
         case PLUS  : printf("\tadd\t%s, %s, %s\n", t0, t0, t1); break ;
         case MINUS : printf("\tsub\t%s, %s, %s\n", t0, t1, t0); break ;
