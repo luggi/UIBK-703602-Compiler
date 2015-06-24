@@ -14,6 +14,7 @@
 #include "symbol_table.h"
 
 int labelc;
+int symbolNumb;
 char *t0;
 char *t1;
 
