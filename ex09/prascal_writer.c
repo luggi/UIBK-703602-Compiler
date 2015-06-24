@@ -13,6 +13,10 @@
 
 #include "symbol_table.h"
 
+int labelc;
+char t0;
+char t1;
+
 static void print_NODE_PROGRAM(const struct ast_node *node);
 static void print_NODE_VARDEC(const struct ast_node *node);
 static void print_NODE_VARDECLIST(const struct ast_node *node);
@@ -47,9 +51,7 @@ static void print_NODE_ADDOP(const struct ast_node *node);
 static void print_NODE_MULOP(const struct ast_node *node);
 
 void print_ast_as_prascal(const struct ast_node *node) {
-    int labelc;
-    char t0;
-    char t1;
+
     if (node == NULL) {
         fprintf(stderr, "\n\nnode is NULL\n");
         exit(EXIT_FAILURE);
@@ -190,14 +192,14 @@ static void print_NODE_STMT_ASSIGN(const struct ast_node *node) {
         //calculate the index //shift left <<2 = *4
         printf("\tsll\t$t0, $t0, 2 #index calculation\n");
         //load array andress in $t1
-        printf("\tla\t$t1, %s #load array address\n", n->body[1]->symbol);
+        printf("\tla\t$t1, %s #load array address\n", node->body[1]->symbol);
         //add offset to adress
         printf("\tadd\t$t1, $t1, $t0\n");
         //store the value of $t2 at the adress of the array in $t1
         printf("\tsw\t$t2, ($t1) #store value in array adress\n");
         //printf(" ] ");
     }else{
-         printf("\tsw\t$t0, %s #store result\n", n->body[0]->symbol);
+         printf("\tsw\t$t0, %s #store result\n", node->body[0]->symbol);
     }
     
 }
@@ -374,7 +376,7 @@ static void print_NODE_IDENT_SUBSCR(const struct ast_node *node) {
           //calculate the index //shift left <<2 = *4
           printf("\tsll\t$t0, $t0, 2 #index calculation\n");
           //load array adress in $t1
-          printf("\tla\t$t1, %s #load array address\n",node->symbol->iValue);
+          printf("\tla\t$t1, %d #load array address\n",node->symbol->iValue);
           //add offset to adress and store everything in $t1
           printf("\tadd\t$t1, $t1, $t0\n");
           //load value of array in $a0
@@ -391,15 +393,15 @@ static void print_NODE_IDENT(const struct ast_node *node) {
     switch(node->symbol->dtype){
             case TYPE_INTEGER:
               printf("\tli\t$v0, 1\t#load sys-call to print int\n");
-              printf("\tlw\t$a0, %s #load int adress into a0\n", node->symbol->iValue);
+              printf("\tlw\t$a0, %d #load int adress into a0\n", node->symbol->iValue);
               break;
             case TYPE_BOOLEAN:
               printf("\tli\t$v0, 1\t#load sys-call to print int\n");
-              printf("\tlw\t$a0, %s #load int adress into a0\n", node->symbol->bValue);
+              printf("\tlw\t$a0, %d #load int adress into a0\n", node->symbol->bValue);
               break;
             case TYPE_REAL:
               printf("\tli\t$v0, 2\t#load sys-call to print float\n");
-              printf("\tl.s\t$f12, %s #load single prec into f12\n", node->symbol->fValue);
+              printf("\tl.s\t$f12, %f #load single prec into f12\n", node->symbol->fValue);
               break;
           };
     printf("\tsyscall\n");      
