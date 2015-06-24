@@ -377,7 +377,7 @@ static void print_NODE_IDENT_SUBSCR(const struct ast_node *node) {
           //calculate the index //shift left <<2 = *4
           printf("\tsll\t$t0, $t0, 2 #index calculation\n");
           //load array adress in $t1
-          printf("\tla\t$t1, %d #load array address\n",node->symbol->iValue);
+          printf("\tla\t$t1, %d #load array address\n",node->iValue);
           //add offset to adress and store everything in $t1
           printf("\tadd\t$t1, $t1, $t0\n");
           //load value of array in $a0
@@ -394,16 +394,18 @@ static void print_NODE_IDENT(const struct ast_node *node) {
     switch(node->symbol->dtype){
             case TYPE_INTEGER:
               printf("\tli\t$v0, 1\t#load sys-call to print int\n");
-              printf("\tlw\t$a0, %d #load int adress into a0\n", node->symbol->iValue);
+              printf("\tlw\t$a0, %d #load int adress into a0\n", node->iValue);
               break;
             case TYPE_BOOLEAN:
               printf("\tli\t$v0, 1\t#load sys-call to print int\n");
-              printf("\tlw\t$a0, %d #load int adress into a0\n", node->symbol->bValue);
+              printf("\tlw\t$a0, %d #load int adress into a0\n", node->bValue);
               break;
             case TYPE_REAL:
               printf("\tli\t$v0, 2\t#load sys-call to print float\n");
-              printf("\tl.s\t$f12, %f #load single prec into f12\n", node->symbol->fValue);
+              printf("\tl.s\t$f12, %f #load single prec into f12\n", node->fValue);
               break;
+            default:
+            break;
           };
     printf("\tsyscall\n");      
 }
