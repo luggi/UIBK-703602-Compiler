@@ -249,7 +249,7 @@ static void print_NODE_STMT_WHILE(const struct ast_node *node) {
 }
 
 static void print_NODE_STMT_FOR(const struct ast_node *node) {
-    /FOR IDENTIFIER ASSIGN expr TO expr DO statement
+    //FOR IDENTIFIER ASSIGN expr TO expr DO statement
     printf("\t# for\n");
     labelc = symbolNumb;
     symbolNumb += 2;
@@ -268,13 +268,13 @@ static void print_NODE_STMT_FOR(const struct ast_node *node) {
     //code
     print_ast_as_prascal(node->body[4]);
     //load value of i into t1 + save val in t2
-    printf("\tlw\t$t2, %s\n", NODE_MULOP->body[0]->symbol->symbol);
+    printf("\tlw\t$t2, %s\n", node->body[0]->symbol->symbol);
     //printf("\tmove\t$t2, $t0 #store identifier val in $t2\n"); 
     //increase and store i 
     printf("\taddi\t$t2, $t2, 1 #increase counter\n");
     printf("\tsw\t$t2, %s #store i\n", node->body[0]->symbol->symbol);
     //save upper bound in $t3
-    generateNode(node->body[3]);
+    print_ast_as_prascal(node->body[3]);
     printf("\tmove\t$t3, $t0 #store upper bound in $t3\n"); 
     //jump to for label
     printf("\tj\tfor_%03d\n",labelc);
@@ -427,7 +427,7 @@ static void print_NODE_STR(const struct ast_node *node) {
 static void print_NODE_BOOL(const struct ast_node *node) {
      printf("\tli\t$v0, 5\t#load sys-call to read int\n");
      printf("\tsyscall\n");
-     printf("\tsw\t$v0, %s #store read value from v0\n", node->bValue);
+     printf("\tsw\t$v0, %d #store read value from v0\n", node->bValue);
 }
 
 static void print_NODE_RELOP(const struct ast_node *node) {
