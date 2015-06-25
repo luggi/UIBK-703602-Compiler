@@ -78,28 +78,31 @@ void print_symbol_table(void) {
         switch(e->etype){
         case SYMBOL_TABLE:
             switch(e->dtype) {
-                case TYPE_INTEGER:
+            case TYPE_INTEGER:
+                printf("%s:\t\t.word\t\n",e->symbol);
+                break
             case TYPE_BOOLEAN:
-                printf("%s:\t\t.word\t%d\n",e->symbol.scalar, e->symbol.int_val);
+                printf("%s:\t\t.word\t\n",e->symbol);
                 break;
             case TYPE_REAL:
-                printf("%s:\t\t.float\t%f\n",e->symbol.scalar, e->symbol.real_val);
+                printf("%s:\t\t.float\t\n",e->symbol);
                 break;
             }
             break;
         case SYMBOL_SCALAR:
             switch(e->dtype) {
-            case _INT:
-            case _BOOL:
+            case TYPE_INTEGER:
+            case TYPE_BOOLEAN:
                 printf("%s:\t\t.word\t0\n",e->symbol);
                 break;
-          case _REAL:
+          case TYPE_REAL:
                 printf("%s:\t\t.float\t0.0\n",e->symbol);
                 break;
             }
             break;
         case SYMBOL_ARRAY:
-            printf("%s:\t\t.space\t%d\n",e->symbol, e->arrayindex*4);
+        //TODO size of array accessor
+            printf("%s:\t\t.space\t%d\n",e->symbol, 4*4);
             break;
         default:
             printf("error, no etype %i\n", e->etype);
