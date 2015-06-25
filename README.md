@@ -1,4 +1,4 @@
-# Here is ANother Compiler
+# UIBK 703602 Compiler Construction (2015)
 
 ## Exercises
 
